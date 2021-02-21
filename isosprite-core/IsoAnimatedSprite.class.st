@@ -140,9 +140,9 @@ IsoAnimatedSprite >> parsekeyValuesFrom: row [
 IsoAnimatedSprite >> play: animationName [
 
 	| animation |
-	Transcript
-		show: 'IsoAnimatedSprite::play ' , animationName,' for sprite ',name;
-		cr.
+	"Transcript
+		show: 'IsoAnimatedSprite::play ' , animationName,' for sprite ',name,' scaleFactor: ',scaleFactor asString;
+		cr."
 	animation := animations at: animationName.
 	self setSelectedAnimation: animation.
 	animation

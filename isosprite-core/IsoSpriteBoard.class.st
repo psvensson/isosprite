@@ -10,5 +10,23 @@ I step
 Class {
 	#name : #IsoSpriteBoard,
 	#superclass : #Morph,
+	#instVars : [
+		'cursor',
+		'cursorRadius',
+		'dataLayers'
+	],
 	#category : #'isosprite-core'
 }
+
+{ #category : #initialization }
+IsoSpriteBoard >> addDataLayer: aBlock named: dataLayerName [
+	dataLayers at: dataLayerName put: aBlock
+]
+
+{ #category : #initialization }
+IsoSpriteBoard >> initialize [ 
+	super initialize .
+	cursor := 0@0.
+	cursorRadius := 3.
+	dataLayers := Dictionary new.
+]

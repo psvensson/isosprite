@@ -24,7 +24,7 @@ IsoSprite >> direction [
 
 { #category : #accessing }
 IsoSprite >> direction: anObject [
-
+	
 	direction := anObject
 ]
 

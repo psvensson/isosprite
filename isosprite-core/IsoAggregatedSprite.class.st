@@ -118,8 +118,11 @@ IsoAggregatedSprite >> play: animationName [
 	self removeAllMorphs.
 	selectedAtLayer valuesDo: [ :sprite | 
 		self addMorph: sprite.
+		"Transcript
+		show: '--------------- IsoAggregatedSprite::play ' , animationName,' for sprite ',sprite name,' scaleFactor: ',scaleFactor asString;cr."
 		sprite
 			direction: direction;
+			scaleFactor: scaleFactor ;
 			position: self position;
 			play: animationName ]
 ]
