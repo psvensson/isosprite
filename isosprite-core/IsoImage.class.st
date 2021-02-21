@@ -7,7 +7,9 @@ Class {
 	#instVars : [
 		'adjustment',
 		'scaleFactor',
-		'transparency'
+		'transparency',
+		'renderSize',
+		'renderOffset'
 	],
 	#category : #'isosprite-core'
 }
@@ -22,6 +24,24 @@ IsoImage >> adjustment [
 IsoImage >> adjustment: anObject [
 
 	adjustment := anObject
+]
+
+{ #category : #accessing }
+IsoImage >> initialize [ 
+	super initialize .
+	renderSize := 128@128.
+	renderOffset := 0@0.
+	scaleFactor := 2.
+]
+
+{ #category : #accessing }
+IsoImage >> renderOffset: r [
+	renderOffset := r
+]
+
+{ #category : #accessing }
+IsoImage >> renderSize: r [
+	renderSize := r
 ]
 
 { #category : #accessing }

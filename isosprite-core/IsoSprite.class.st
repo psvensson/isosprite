@@ -8,16 +8,34 @@ Class {
 		'renderSize',
 		'renderOffset',
 		'spritesPerRow',
-		'spriteImages'
+		'spriteImages',
+		'direction',
+		'scaleFactor',
+		'name'
 	],
 	#category : #'isosprite-core'
 }
 
 { #category : #accessing }
+IsoSprite >> direction [
+
+	^ direction
+]
+
+{ #category : #accessing }
+IsoSprite >> direction: anObject [
+
+	direction := anObject
+]
+
+{ #category : #accessing }
 IsoSprite >> initialize [
-	super initialize .
-	renderSize := 256@256.
-	renderOffset := 0@0
+
+	super initialize.
+	renderSize := 256 @ 256.
+	renderOffset := 0 @ 0.
+	scaleFactor := 1@1.
+	self color: Color transparent
 ]
 
 { #category : #accessing }
@@ -36,6 +54,18 @@ IsoSprite >> loadSpriteImage: img spriteWidth: _width spriteHeight: _height spri
 			sprites at: index put: aMorph.
 			index := index + 1 ] ].
 	spriteImages := sprites
+]
+
+{ #category : #accessing }
+IsoSprite >> name [
+
+	^ name
+]
+
+{ #category : #accessing }
+IsoSprite >> name: anObject [
+
+	name := anObject
 ]
 
 { #category : #accessing }
@@ -60,4 +90,9 @@ IsoSprite >> renderSize [
 IsoSprite >> renderSize: anObject [
 
 	renderSize := anObject
+]
+
+{ #category : #accessing }
+IsoSprite >> scaleFactor: s [
+	scaleFactor := s
 ]

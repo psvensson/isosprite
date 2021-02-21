@@ -8,7 +8,8 @@ Class {
 		'image',
 		'section',
 		'animationDefinitions',
-		'animations'
+		'animations',
+		'selectedAnimation'
 	],
 	#category : #'isosprite-core'
 }
@@ -40,18 +41,19 @@ IsoAnimatedSprite >> animations: anObject [
 { #category : #generating }
 IsoAnimatedSprite >> generateAnimationsFromDefinition [
 
-	animationDefinitions keysAndValuesDo: [ :name :values | 
+	animationDefinitions keysAndValuesDo: [ :n :values | 
 		| animation |
-		Transcript
-			show: 'IsoAnimatedSprite:.generateAnimationsFromDefinition ,'name,' -> ' , values asString;
-			cr.
-
 		animation := IsoAnimatedImage
 			             fromFlareDefinition: values
 			             images: spriteImages
 			             spritesPerRow: spritesPerRow.
-
-		animations at: name put: animation ]
+		animation
+			name: n;
+			renderSize: renderSize;
+			renderOffset: renderOffset.
+		"Transcript show:'IsoAnimatedSprite::generateAnimationFromDefintion: ',n;cr."
+		animations at: n put: animation.
+		self setSelectedAnimation: animation ]
 ]
 
 { #category : #accessing }
@@ -70,6 +72,7 @@ IsoAnimatedSprite >> image: anObject [
 IsoAnimatedSprite >> initialize [
 
 	super initialize .
+	
 	animationDefinitions := Dictionary new.
 	animations := Dictionary new
 ]
@@ -128,15 +131,38 @@ IsoAnimatedSprite >> parsekeyValuesFrom: row [
 	| kv animationDefinition |
 	kv := row substrings: '='.
 	section ifNil: [ self parseGlobalKeyValue: kv ] ifNotNil: [ 
-		Transcript show:'   parseKeyValues ',kv first,' -> ',kv last;cr.
+		"Transcript show:'   parseKeyValues ',kv first,' -> ',kv last;cr."
 		animationDefinition := animationDefinitions at: section.
 		animationDefinition at: kv first put: kv last ]
+]
+
+{ #category : #accessing }
+IsoAnimatedSprite >> play: animationName [
+
+	| animation |
+	Transcript
+		show: 'IsoAnimatedSprite::play ' , animationName,' for sprite ',name;
+		cr.
+	animation := animations at: animationName.
+	self setSelectedAnimation: animation.
+	animation
+		scaleFactor: scaleFactor ;
+		direction: direction;
+		play
+]
+
+{ #category : #accessing }
+IsoAnimatedSprite >> setSelectedAnimation: animation [
+
+	selectedAnimation ifNotNil: [ self removeMorph: selectedAnimation ].
+	selectedAnimation := animation.
+	self addMorph: selectedAnimation
 ]
 
 { #category : #accessing }
 IsoAnimatedSprite >> switchSection: row [
 
 	section := row onlyLetters.
-	Transcript show:'--- switching to section "',section,'"';cr.
+	"Transcript show:'--- switching to section ',section,;cr."
 	animationDefinitions at: section put: Dictionary new
 ]

@@ -15,7 +15,11 @@ Class {
 		'spriteImages',
 		'spritesPerRow',
 		'frames',
-		'currentFrame'
+		'currentFrame',
+		'frame',
+		'direction',
+		'playDirection',
+		'name'
 	],
 	#category : #'isosprite-core'
 }
@@ -52,20 +56,32 @@ IsoAnimatedImage >> addFrame: frameNo direction: dir image: image [
 	framelist := frames at: frameNo ifAbsent: [ Dictionary new ].	
 	framelist at: dir put: image.	
 	frames at: frameNo put: framelist.
-	currentFrame := image.
+	
 ]
 
 { #category : #accessing }
 IsoAnimatedImage >> addFramesFrom: start to: end [
 
 	index := 1.
-	start to: end do: [ :frame | 
+	start to: end do: [ :f | 
 		| dir |
 		dir := 1.
-		(self getSpriteImagesColumn: frame) do: [ :img | 
+		(self getSpriteImagesColumn: f) do: [ :img | 
 			self addFrame: index direction: dir image: img.
 			dir := dir + 1 ].
 		index := index + 1 ]
+]
+
+{ #category : #accessing }
+IsoAnimatedImage >> direction [
+
+	^ direction
+]
+
+{ #category : #accessing }
+IsoAnimatedImage >> direction: anObject [
+
+	direction := anObject
 ]
 
 { #category : #accessing }
@@ -85,7 +101,59 @@ IsoAnimatedImage >> getSpriteImagesColumn: c [
 { #category : #initialization }
 IsoAnimatedImage >> initialize [
 	super initialize .
-	frames := Dictionary new
+	self color: Color transparent .
+	frames := Dictionary new.
+	frame := 1.
+	direction := 1.
+	playDirection := 1.
+]
+
+{ #category : #accessing }
+IsoAnimatedImage >> name: n [
+	name := n
+]
+
+{ #category : #accessing }
+IsoAnimatedImage >> play [
+Transcript show:'IsoAnimatedImage::play ',name,' scaleFactor ',scaleFactor asString;cr.
+	self startStepping 
+]
+
+{ #category : #accessing }
+IsoAnimatedImage >> playLooped [
+
+	frame := frame + 1.
+	frame > frames size ifTrue: [ frame := 1 ].
+]
+
+{ #category : #accessing }
+IsoAnimatedImage >> playOnce [ 
+	frame := frame + 1 . 	
+	frame > frames size
+		ifFalse: [ ^ self ].
+	frame := 1.
+	self stopStepping .
+]
+
+{ #category : #accessing }
+IsoAnimatedImage >> playbackAndForth [
+
+	(frame + playDirection > frames size or: [ frame + playDirection < 1 ]) 
+		ifTrue: [ 
+			playDirection := playDirection negated.
+			^ self ].
+	frame := frame + playDirection
+]
+
+{ #category : #accessing }
+IsoAnimatedImage >> setCurrentFrame: image [
+
+	currentFrame ifNotNil: [ self removeMorph: currentFrame ].
+	image
+		resize: (scaleFactor * renderSize) .
+		"position: self position - renderOffset."
+	currentFrame := image.
+	self addMorph: currentFrame
 ]
 
 { #category : #accessing }
@@ -110,6 +178,23 @@ IsoAnimatedImage >> spritesPerRow [
 IsoAnimatedImage >> spritesPerRow: anObject [
 
 	spritesPerRow := anObject
+]
+
+{ #category : #'stepping and presenter' }
+IsoAnimatedImage >> step [
+
+	| aFrame directionFrames |
+	directionFrames := frames at: frame.
+	aFrame := directionFrames at: direction.
+	self setCurrentFrame: aFrame.
+	(type isNil or: [ type = 'play_once' ]) ifTrue: [ self playOnce ].
+	type = 'looped' ifTrue: [ self playLooped ].
+	type = 'back_forth' ifTrue: [ self playbackAndForth ]
+]
+
+{ #category : #accessing }
+IsoAnimatedImage >> stepTime [
+	^ (duration / frames size) asInteger .
 ]
 
 { #category : #accessing }
