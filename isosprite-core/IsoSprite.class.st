@@ -4,6 +4,32 @@ I am a Morph who holds an image. I am positioned by the IsoSpriteBoard and I am 
 I hold a class-side cache which can be asked for new instances of a named sprite. All unique sprites are also registered here by IsoSprite, IsoAnimatedSprite or IsoAggregatedSprite subclasses, so they can be refered to later.
 
 The cache acts as a factory for named types of sprites, like 'floor_tile1', 'floor_tile2', 'hero', 'zombie', et.c. regardless of what kind.
+----
+How to load png's and store them as base64 encoded strings in methods;
+
+|img writeStream encoded byteArray newImg method|
+img := PNGReadWriter formFromStream: 'imagefile.png' asFileReference binaryReadStream.
+writeStream := WriteStream on: ByteArray new.
+PNGReadWriter putForm: img onStream: writeStream.
+encoded := writeStream contents base64Encoded.
+
+""Decode the base64Encoded bytes and display the image""
+byteArray := encoded base64Decoded.
+newImg := PNGReadWriter formFromStream: byteArray readStream.
+newImg asMorph openInHand.
+
+method := (String streamContents: [:s |
+    s
+        nextPutAll: 'getEncoded';
+        nextPut: Character cr;
+        nextPut: Character tab;
+ 			 nextPut: $^;
+        nextPut: $';
+        nextPutAll: encoded;
+        nextPut: $']).
+""Add the method to the Sprite subclass""
+Human compile: method
+
 "
 Class {
 	#name : #IsoSprite,
