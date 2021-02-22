@@ -17,8 +17,7 @@ Class {
 		'savedDirection'
 	],
 	#classInstVars : [
-		'cache',
-		'encodedSprites'
+		'cache'
 	],
 	#category : #'isosprite-core'
 }
@@ -31,24 +30,6 @@ IsoAggregatedSprite class >> flareDefinition [
 { #category : #'as yet unclassified' }
 IsoAggregatedSprite class >> generate [
 	self subclassResponsibility 
-]
-
-{ #category : #'as yet unclassified' }
-IsoAggregatedSprite class >> getImageForSprite: spriteName [
-
-	| bytes |
-	^ cache at: spriteName ifAbsentPut: [ 
-		  | img |
-		  bytes := (self perform: (encodedSprites at: spriteName) asSymbol)
-			           base64Decoded.
-		  img := PNGReadWriter formFromStream: bytes readStream.
-		  img ]
-]
-
-{ #category : #'as yet unclassified' }
-IsoAggregatedSprite class >> initialize [
-	cache := Dictionary new.
-	encodedSprites := Dictionary new.
 ]
 
 { #category : #adding }
@@ -86,7 +67,7 @@ IsoAggregatedSprite >> addAnimatedSpriteFromImage: img name: n layer: layerName 
 IsoAggregatedSprite >> addAnimatedSpriteFromName: n layer: layerName [
 
 	self
-		addAnimatedSpriteFromImage: (self class getImageForSprite: n)
+		addAnimatedSpriteFromImage: (IsoSprite getImageForSprite: n)
 		name: n
 		layer: layerName
 ]

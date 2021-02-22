@@ -82,7 +82,7 @@ type=play_once'.
 IsoAnimatedSpriteTest >> testAggregatedSprite [
 	
 	| sprite |
-	sprite := TestAggregatedSprite generate.
+	sprite := TestAggregatedSprite generate: 'hero'.
 	sprite inspect
 ]
 
