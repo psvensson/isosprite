@@ -8,7 +8,7 @@ Class {
 TestTileObject class >> create: tileName [
 	| instance |
 	instance := self new.
-	instance sprite: (TestTileSprite generate: tileName ).
+	instance sprite: (TestCrackedTileSprite generate: tileName ).
 	^ instance
 ]
 

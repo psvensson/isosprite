@@ -75,11 +75,15 @@ IsoSprite class >> getImageForSprite: spriteName [
 	| bytes |
 	^ imageCache at: spriteName ifAbsent: [ 
 		  | img classMethod c m |
+		  Transcript
+			  show: 'IsoSprite::getImageForSprite cache miss for ' , spriteName;
+			  cr.
 		  classMethod := encodedSprites at: spriteName.
 		  c := classMethod at: #spriteclass.
 		  m := classMethod at: #spritemethod.
 		  bytes := (c perform: m asSymbol) base64Decoded.
 		  img := PNGReadWriter formFromStream: bytes readStream.
+		  imageCache at: spriteName put: img.
 		  img ]
 ]
 
@@ -134,6 +138,8 @@ IsoSprite >> form [
 IsoSprite >> form: f [
 	form ifNotNil: [ self removeMorph: form ].
 	form := f.
+	
+	form resize: scaleFactor * (tileWidth*tileHeight)  .
 	self addMorph: f
 ]
 

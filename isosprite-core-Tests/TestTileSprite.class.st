@@ -14,6 +14,7 @@ TestTileSprite class >> generate: spritename [
 	instance := self new.
 	image := IsoSprite getImageForSprite: 'classic_tiles'.
 	instance
+		scaleFactor: 4@4;
 		tileWidth: 64;
 		tileHeight: 64.
 	spritename = 'brown_wall' ifTrue: [ 

@@ -68,7 +68,7 @@ IsoSpriteBoard >> getTilesFromLayers [
 	dataLayers keysAndValuesDo: [ :name :block | 
 		| result |
 		result := block value: start value: end.
-		Transcript show:'getTilesFromLayers got ',result keys size asString,' for layer ',name;cr.
+		"Transcript show:'getTilesFromLayers got ',result keys size asString,' for layer ',name;cr."
 		tilesForLayers at: name put: result ].
 	^ tilesForLayers 
 ]
@@ -83,7 +83,7 @@ IsoSpriteBoard >> getTilestacksFromLayers [
 	tilesFromLayers := self getTilesFromLayers.
 	firstLayerName := dataLayerPriority first.
 	firstLayerCoords := (tilesFromLayers at: firstLayerName) keys.
-	Transcript show:'getTileStacksFromLayers pasrsing ',firstLayerCoords size asString,' coords';cr.
+	"Transcript show:'getTileStacksFromLayers pasrsing ',firstLayerCoords size asString,' coords';cr."
 	firstLayerCoords do: [ :coord | 
 		| stack |
 		stack := OrderedCollection new.
@@ -139,6 +139,6 @@ IsoSpriteBoard >> paintIsometricSprite: object boardPosition: boardPosition [
 IsoSpriteBoard >> paintTilestack: tileStack at: boardPosition [
 	"Paint al sprites in stack from lowest to highest"
 	tileStack do: [ :object |
-		Transcript show: 'IsoSpriteBoard::paintTileStack adding sprite ',object asString;cr.
+		"Transcript show: 'IsoSpriteBoard::paintTileStack adding sprite ',object asString;cr."
 		self paintIsometricSprite: object boardPosition: boardPosition  ]
 ]

@@ -83,6 +83,8 @@ IsoAggregatedSpriteTest >> testAggregatedSprite [
 	
 	| sprite |
 	sprite := TestAggregatedSprite generate: 'hero'.
+	sprite play: 'stance'.
+	
 	sprite inspect
 	
 "

@@ -13,8 +13,7 @@ Class {
 	#instVars : [
 		'layers',
 		'selectedAtLayer',
-		'anySprite',
-		'savedDirection'
+		'anySprite'
 	],
 	#classInstVars : [
 		'cache'
@@ -90,7 +89,8 @@ IsoAggregatedSprite >> initialize [
 	self color: Color transparent.
 	layers := Dictionary new.
 	selectedAtLayer := Dictionary new.
-	savedDirection := 1.
+	direction := 1.
+	scaleFactor := 2@2
 ]
 
 { #category : #adding }

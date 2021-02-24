@@ -72,7 +72,8 @@ IsoAnimatedSprite >> image: anObject [
 IsoAnimatedSprite >> initialize [
 
 	super initialize .
-	
+	direction := 1.
+	scaleFactor := 2@2.
 	animationDefinitions := Dictionary new.
 	animations := Dictionary new
 ]

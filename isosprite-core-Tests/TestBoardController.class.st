@@ -19,8 +19,12 @@ Class {
 TestBoardController >> addEntity: entityName at: boardPosition [
 
 	| entity |
-	entityName = 'hero' ifTrue: [ entity := TestHero create ].
+	entityName = 'hero' ifTrue: [ 
+		entity := TestHero create.
+		entity sprite selectSpriteNamed: 'clothes' forLayer: 'body'.
+		entity sprite selectSpriteNamed: 'long_sword' forLayer: 'wepaon' ].
 	entityName = 'zombie' ifTrue: [ entity := TestZombie create ].
+	entity sprite play: entity spriteIdleAnimationName.
 	entity boardPosition: boardPosition.
 	entities at: boardPosition put: entity
 ]
@@ -69,7 +73,7 @@ TestBoardController >> getTilesFrom: startPoint to: endPoint [
 		startPoint x to: endPoint x do: [ :x | 
 			| tile |
 			tile := self lookupTileAt: x @ y.
-			Transcript show:'getTilesFrom tile at ',(x@y) asString,' -> ',tile asString;cr.
+			"Transcript show:'getTilesFrom tile at ',(x@y) asString,' -> ',tile asString;cr."
 			tile ifNotNil: [ tilesReturned at: x@y put: tile ] ] ].
 	^ tilesReturned
 ]
@@ -77,8 +81,8 @@ TestBoardController >> getTilesFrom: startPoint to: endPoint [
 { #category : #initialization }
 TestBoardController >> initialize [
 
-	self initializeEntities.
 	self initializeTiles.
+	self initializeEntities.
 	board := IsoSpriteBoard new.
 	board
 		addDataLayer: [ :start :end | self getTilesFrom: start to: end ]
@@ -86,7 +90,7 @@ TestBoardController >> initialize [
 	board
 		addDataLayer: [ :start :end | self getEntitiesFrom: start to: end ]
 		named: 'entities'.
-	board paint.	
+	board paint
 ]
 
 { #category : #initialization }
@@ -100,9 +104,11 @@ TestBoardController >> initializeEntities [
 { #category : #initialization }
 TestBoardController >> initializeTiles [ 
 	tiles := Dictionary new.
-	-4 to: 4 do: [ :y|
-		-4 to: 4 do: [ :x|
-		   self addTile: 'grey_floor' at: x@y] ]
+	-2 to: 2 do: [ :y|
+		-2 to: 2 do: [ :x|
+			| tileno |
+			tileno := 1"2 atRandom" .
+		   self addTile: 'cr_floor',tileno asString at: x@y] ]
 ]
 
 { #category : #initialization }
