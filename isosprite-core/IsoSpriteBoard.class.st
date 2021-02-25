@@ -74,7 +74,7 @@ IsoSpriteBoard >> initialize [
 
 	super initialize.
 	cursor := 0 @ 0.
-	tileSize := 128.
+	tileSize := 64.
 	self
 		color: Color transparent ;
 		borderWidth: 2;
@@ -107,8 +107,8 @@ IsoSpriteBoard >> positionIsometricSprite: object boardPosition: boardPosition [
 	midPoint := self extent x / 3 @ (self extent y / 2).
 	sprite := object sprite.
 	normalizedBoardPosition := boardPosition - cursor.
-	spritePosition := normalizedBoardPosition - sprite renderOffset.
-	isoSpritePosition := self class toISO: spritePosition * sprite scaleFactor * tileSize .
+	spritePosition := normalizedBoardPosition .
+	isoSpritePosition := self class toISO: spritePosition * tileSize .
 	sprite position: isoSpritePosition + midPoint.
 	self addMorph: sprite
 ]

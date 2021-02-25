@@ -14,7 +14,7 @@ TestCrackedTileSprite class >> generate: spritename [
 	instance := self new.
 	image := IsoSprite getImageForSprite: 'cracked_tiles'.
 	instance
-		renderOffset: 0@0;
+		renderOffset: (0)@(-64);
 		scaleFactor: 2 @ 2;
 		renderSize: 64@64;
 		tileHeight:32;

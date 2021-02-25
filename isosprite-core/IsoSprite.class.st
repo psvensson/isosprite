@@ -138,7 +138,7 @@ IsoSprite >> form [
 IsoSprite >> form: f [
 	form ifNotNil: [ self removeMorph: form ].
 	form := f.
-	
+	form position: self position -  renderOffset.
 	form resize: scaleFactor * renderSize   .
 	self addMorph: f
 ]

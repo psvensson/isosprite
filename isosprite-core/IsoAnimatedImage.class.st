@@ -115,8 +115,10 @@ IsoAnimatedImage >> name: n [
 
 { #category : #accessing }
 IsoAnimatedImage >> play [
-Transcript show:'IsoAnimatedImage::play ',name,' scaleFactor ',scaleFactor asString;cr.
-	self startStepping 
+
+	"Transcript show:'IsoAnimatedImage::play ',name,' scaleFactor ',scaleFactor asString;cr."
+
+	self startStepping
 ]
 
 { #category : #accessing }
