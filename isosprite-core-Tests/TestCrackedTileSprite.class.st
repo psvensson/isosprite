@@ -14,33 +14,35 @@ TestCrackedTileSprite class >> generate: spritename [
 	instance := self new.
 	image := IsoSprite getImageForSprite: 'cracked_tiles'.
 	instance
+		renderOffset: 0@0;
 		scaleFactor: 2 @ 2;
-		tileWidth: 64;
-		tileHeight: 32.
+		renderSize: 64@64;
+		tileHeight:32;
+		tileWidth:64.
 	spritename = 'cr_floor1' ifTrue: [ 
 		instance form: (instance getTileFrom: image x: 0 y: 0) ].
 	spritename = 'cr_floor2' ifTrue: [ 
-		instance form: (instance getTileFrom: image x: 0 y: 1) ].
-	spritename = 'cr_floor3' ifTrue: [ 
-		instance form: (instance getTileFrom: image x: 0 y: 3) ].
-	spritename = 'cr_floor4' ifTrue: [ 
-		instance form: (instance getTileFrom: image x: 0 y: 3) ].
-	spritename = 'cr_floor5' ifTrue: [ 
 		instance form: (instance getTileFrom: image x: 1 y: 0) ].
+	spritename = 'cr_floor3' ifTrue: [ 
+		instance form: (instance getTileFrom: image x: 2 y: 0) ].
+	spritename = 'cr_floor4' ifTrue: [ 
+		instance form: (instance getTileFrom: image x: 3 y: 0) ].
+	spritename = 'cr_floor5' ifTrue: [ 
+		instance form: (instance getTileFrom: image x: 0 y: 1) ].
 	spritename = 'cr_floor6' ifTrue: [ 
 		instance form: (instance getTileFrom: image x: 1 y: 1) ].
 	spritename = 'cr_floor7' ifTrue: [ 
-		instance form: (instance getTileFrom: image x: 1 y: 2) ].
-	spritename = 'cr_floor8' ifTrue: [ 
-		instance form: (instance getTileFrom: image x: 1 y: 3) ].
-	spritename = 'cr_floor9' ifTrue: [ 
-		instance form: (instance getTileFrom: image x: 2 y: 0) ].
-	spritename = 'cr_floor10' ifTrue: [ 
 		instance form: (instance getTileFrom: image x: 2 y: 1) ].
+	spritename = 'cr_floor8' ifTrue: [ 
+		instance form: (instance getTileFrom: image x: 3 y: 1) ].
+	spritename = 'cr_floor9' ifTrue: [ 
+		instance form: (instance getTileFrom: image x: 0 y: 2) ].
+	spritename = 'cr_floor10' ifTrue: [ 
+		instance form: (instance getTileFrom: image x: 1 y: 2) ].
 	spritename = 'cr_floor11' ifTrue: [ 
 		instance form: (instance getTileFrom: image x: 2 y: 2) ].
 	spritename = 'cr_floor12' ifTrue: [ 
-		instance form: (instance getTileFrom: image x: 2 y: 3) ].
+		instance form: (instance getTileFrom: image x: 3 y: 2) ].
 
 	^ instance
 ]

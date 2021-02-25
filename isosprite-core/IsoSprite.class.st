@@ -97,7 +97,7 @@ IsoSprite class >> getSpriteFrom: spriteHolder [
 
 	^ spriteCache at: spriteHolder ifAbsent: [ 
 		  | factory instance spriteName|
-		spriteName := spriteHolder spriteName.
+		spriteName := spriteHolder name.
 		  factory := self getSpriteFactoryFor: spriteName.
 		  instance := factory generate: spriteName.
 		  spriteCache at: spriteHolder put: instance.
@@ -139,7 +139,7 @@ IsoSprite >> form: f [
 	form ifNotNil: [ self removeMorph: form ].
 	form := f.
 	
-	form resize: scaleFactor * (tileWidth*tileHeight)  .
+	form resize: scaleFactor * renderSize   .
 	self addMorph: f
 ]
 

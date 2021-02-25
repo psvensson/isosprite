@@ -149,9 +149,7 @@ IsoAnimatedImage >> playbackAndForth [
 IsoAnimatedImage >> setCurrentFrame: image [
 
 	currentFrame ifNotNil: [ self removeMorph: currentFrame ].
-	image
-		resize: (scaleFactor * renderSize) ;
-		position: self position - renderOffset.
+	image position: self position.
 	currentFrame := image.
 	self addMorph: currentFrame
 ]

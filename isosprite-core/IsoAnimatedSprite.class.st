@@ -73,7 +73,7 @@ IsoAnimatedSprite >> initialize [
 
 	super initialize .
 	direction := 1.
-	scaleFactor := 2@2.
+	scaleFactor := 1@1.
 	animationDefinitions := Dictionary new.
 	animations := Dictionary new
 ]
@@ -141,13 +141,11 @@ IsoAnimatedSprite >> parsekeyValuesFrom: row [
 IsoAnimatedSprite >> play: animationName [
 
 	| animation |
-	"Transcript
-		show: 'IsoAnimatedSprite::play ' , animationName,' for sprite ',name,' scaleFactor: ',scaleFactor asString;
-		cr."
 	animation := animations at: animationName.
 	self setSelectedAnimation: animation.
 	animation
-		scaleFactor: scaleFactor ;
+		scaleFactor: scaleFactor;
+		renderOffset: renderOffset;
 		direction: direction;
 		play
 ]

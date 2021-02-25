@@ -10,7 +10,11 @@ Class {
 		'testDefinition',
 		'board',
 		'tiles',
-		'entities'
+		'entities',
+		'minX',
+		'minY',
+		'maxX',
+		'maxY'
 	],
 	#category : #'isosprite-core-Tests'
 }
@@ -30,13 +34,27 @@ TestBoardController >> addEntity: entityName at: boardPosition [
 ]
 
 { #category : #initialization }
-TestBoardController >> addTile: tileName at: boardPosition [
+TestBoardController >> addFloorTile: tileName at: boardPosition [
 
 	| tile |
+	self setMinMaxvalues: boardPosition .
+	"tile := TestOldTileObject create: tileName."
 	tile := TestTileObject create: tileName.
 	tile boardPosition: boardPosition.
 	tiles at: boardPosition put: tile.
-	Transcript show: 'adding tile at ',boardPosition asString;cr.
+	"Transcript show: 'adding tile at ',boardPosition asString;cr."
+]
+
+{ #category : #initialization }
+TestBoardController >> addTile: tileName at: boardPosition [
+
+	| tile |
+	self setMinMaxvalues: boardPosition .
+	tile := TestOldTileObject create: tileName.
+	"tile := TestTileObject create: tileName."
+	tile boardPosition: boardPosition.
+	tiles at: boardPosition put: tile.
+	"Transcript show: 'adding tile at ',boardPosition asString;cr."
 ]
 
 { #category : #accessing }
@@ -52,63 +70,59 @@ TestBoardController >> board: anObject [
 ]
 
 { #category : #initialization }
-TestBoardController >> getEntitiesFrom: startPoint to: endPoint [
-
-	| entitiesReturned |
-	entitiesReturned := Dictionary new.
-	startPoint y to: endPoint y do: [ :y | 
-		startPoint x to: endPoint x do: [ :x | 
-			| entity |
-			entity := self lookupEntityAt: x @ y.
-			entity ifNotNil: [ entitiesReturned at: x@y put: entity ] ] ].
-	^ entitiesReturned
-]
-
-{ #category : #initialization }
-TestBoardController >> getTilesFrom: startPoint to: endPoint [
+TestBoardController >> getSpritesFrom: start to: end [
 
 	| tilesReturned |
-	tilesReturned := Dictionary new.
-	startPoint y to: endPoint y do: [ :y | 
-		startPoint x to: endPoint x do: [ :x | 
-			| tile |
+	tilesReturned := OrderedCollection new.
+	start y to: end y do: [ :y | 
+		start x to: end x do: [ :x | 
+			| tile entity stack |
+			stack := OrderedCollection new.
+			tilesReturned add: stack.
 			tile := self lookupTileAt: x @ y.
-			"Transcript show:'getTilesFrom tile at ',(x@y) asString,' -> ',tile asString;cr."
-			tile ifNotNil: [ tilesReturned at: x@y put: tile ] ] ].
+			entity := self lookupEntityAt: x @ y.
+			tile ifNotNil: [ stack add: tile ].
+			entity ifNotNil: [ stack add: entity ] ] ].
+
 	^ tilesReturned
 ]
 
 { #category : #initialization }
 TestBoardController >> initialize [
-
+	minX := 0.
+	maxX := 0.
+	minY := 0.
+	maxY := 0.
 	self initializeTiles.
 	self initializeEntities.
 	board := IsoSpriteBoard new.
 	board
-		addDataLayer: [ :start :end | self getTilesFrom: start to: end ]
-		named: 'tiles'.
-	board
-		addDataLayer: [ :start :end | self getEntitiesFrom: start to: end ]
-		named: 'entities'.
+		dataStore: [ :start :end | self getSpritesFrom: start to: end ].	
 	board paint
 ]
 
 { #category : #initialization }
 TestBoardController >> initializeEntities [  
 	entities := Dictionary new.
+	self addEntity: 'hero' at: 0@(-2).
+	self addEntity: 'zombie' at: 0@(-1).
 	self addEntity: 'hero' at: 0@0.
-	self addEntity: 'zombie' at: 3@3.
-	self addEntity: 'zombie' at: -2@3.
+	self addEntity: 'zombie' at: 0@1.
+	self addEntity: 'hero' at: 0@2.
+	self addEntity: 'zombie' at: 0@3.
 ]
 
 { #category : #initialization }
 TestBoardController >> initializeTiles [ 
 	tiles := Dictionary new.
-	-2 to: 2 do: [ :y|
-		-2 to: 2 do: [ :x|
+	-4 to: 4 do: [ :y|
+		-4 to: 4 do: [ :x|
 			| tileno |
-			tileno := 1"2 atRandom" .
-		   self addTile: 'cr_floor',tileno asString at: x@y] ]
+			tileno := 12 atRandom .
+		   self addFloorTile: 'cr_floor',tileno asString at: x@y
+		"self addTile: 'grey_floor' at: x@y"] ].
+	self addTile: 'brown_wall' at: 1@0.
+	self addTile: 'brown_wall' at: (-1)@0.
 ]
 
 { #category : #initialization }
@@ -120,4 +134,12 @@ TestBoardController >> lookupEntityAt: boardPosition [
 TestBoardController >> lookupTileAt: boardPosition [
 	^ tiles at: boardPosition 
 	
+]
+
+{ #category : #initialization }
+TestBoardController >> setMinMaxvalues: boardPosition [
+	minX := boardPosition x min: minX.
+	minY := boardPosition y min: minY.
+	maxX := boardPosition x max: maxX.
+	maxY := boardPosition y max: maxY.
 ]

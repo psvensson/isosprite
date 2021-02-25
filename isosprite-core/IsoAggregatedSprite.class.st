@@ -57,8 +57,15 @@ IsoAggregatedSprite >> addAnimatedSpriteFromImage: img name: n layer: layerName 
 	sprite := IsoAnimatedSprite
 		          from: self class flareDefinition
 		          image: img.
-	sprite name: n.
-	Transcript show:'IsoAggregateSprite::addAnimatedSprieFromImage name = ',n,' layer = ',layerName ;cr.
+	sprite
+		name: n;
+		scaleFactor: scaleFactor;
+		renderOffset: renderOffset;
+		direction: direction.
+	Transcript
+		show: 'IsoAggregateSprite::addAnimatedSprieFromImage name = ' , n
+			, ' layer = ' , layerName;
+		cr.
 	self addAnimatedSprite: sprite layer: layerName
 ]
 
@@ -90,7 +97,7 @@ IsoAggregatedSprite >> initialize [
 	layers := Dictionary new.
 	selectedAtLayer := Dictionary new.
 	direction := 1.
-	scaleFactor := 2@2
+	scaleFactor := 1@1
 ]
 
 { #category : #adding }

@@ -16,7 +16,8 @@ Class {
 		'dataLayers',
 		'tileSize',
 		'isoSpritePosition',
-		'dataLayerPriority'
+		'dataLayerPriority',
+		'dataStore'
 	],
 	#category : #'isosprite-core'
 }
@@ -44,8 +45,13 @@ IsoSpriteBoard >> cursorRadius: aNumber [
 
 	| side |
 	cursorRadius := aNumber.
-	side := (1 + (2 * cursorRadius)) * tileSize.
-	self extent: side @ side
+	side := (1 + (4 * cursorRadius)) * tileSize.
+	self extent: (side @ side)
+]
+
+{ #category : #initialization }
+IsoSpriteBoard >> dataStore: aBlock [ 
+	dataStore := aBlock
 ]
 
 { #category : #initialization }
@@ -59,41 +65,8 @@ IsoSpriteBoard >> getStartCoord [
 ]
 
 { #category : #initialization }
-IsoSpriteBoard >> getTilesFromLayers [
-
-	| tilesForLayers start end |
-	start := self getStartCoord.
-	end := self getEndCoord.
-	tilesForLayers := Dictionary new.
-	dataLayers keysAndValuesDo: [ :name :block | 
-		| result |
-		result := block value: start value: end.
-		"Transcript show:'getTilesFromLayers got ',result keys size asString,' for layer ',name;cr."
-		tilesForLayers at: name put: result ].
-	^ tilesForLayers 
-]
-
-{ #category : #initialization }
-IsoSpriteBoard >> getTilestacksFromLayers [
-
-	"get sprites from all layers, building a dictionary where for each position there is an orderedcollection with sprites in order of registration preference (so tiles can be lowest/first and entities can be highest/last)"
-
-	| firstLayerName firstLayerCoords tileStacks tilesFromLayers |
-	tileStacks := Dictionary new.
-	tilesFromLayers := self getTilesFromLayers.
-	firstLayerName := dataLayerPriority first.
-	firstLayerCoords := (tilesFromLayers at: firstLayerName) keys.
-	"Transcript show:'getTileStacksFromLayers pasrsing ',firstLayerCoords size asString,' coords';cr."
-	firstLayerCoords do: [ :coord | 
-		| stack |
-		stack := OrderedCollection new.
-		tileStacks at: coord put: stack.
-		dataLayerPriority do: [ :layerName | 
-			| sprite layer |
-			layer := tilesFromLayers at: layerName.
-			sprite := layer at: coord ifAbsent: [nil].
-			sprite ifNotNil: [ stack add: sprite ] ] ].
-	^ tileStacks 
+IsoSpriteBoard >> getTilestacksFromDataStore [
+	^ dataStore value: (self getStartCoord ) value: (self getEndCoord )
 ]
 
 { #category : #initialization }
@@ -103,9 +76,10 @@ IsoSpriteBoard >> initialize [
 	cursor := 0 @ 0.
 	tileSize := 128.
 	self
+		color: Color transparent ;
 		borderWidth: 2;
 		borderColor: Color green;
-		cursorRadius: 3.
+		cursorRadius: 2.
 	dataLayers := Dictionary new.
 	dataLayerPriority := OrderedCollection new
 ]
@@ -113,32 +87,28 @@ IsoSpriteBoard >> initialize [
 { #category : #initialization }
 IsoSpriteBoard >> paint [
 	| tileStacks |
-	tileStacks := self getTilestacksFromLayers.
-	tileStacks keysAndValuesDo: [ :boardPosition :tileStack | 
-		 self paintTilestack: tileStack at: boardPosition  ]
+	tileStacks := self getTilestacksFromDataStore .
+	tileStacks do: [ :tileStack | 
+		 self paintTilestack: tileStack   ]
 ]
 
 { #category : #initialization }
-IsoSpriteBoard >> paintIsometricSprite: object boardPosition: boardPosition [
-
-	"Calculate real position of isometric projection of boardPosition and add sprite"
-
-	| mid midPoint normalizedBoardPosition spritePosition sprite |
-	mid := self extent x / 2.
-	midPoint := mid @ mid.
-
-	normalizedBoardPosition := boardPosition - cursor.
-	spritePosition := normalizedBoardPosition * tileSize + midPoint.
-	isoSpritePosition := self class toISO: spritePosition.
-	sprite := object sprite.
-	sprite position: isoSpritePosition.
-	self addMorph: sprite
-]
-
-{ #category : #initialization }
-IsoSpriteBoard >> paintTilestack: tileStack at: boardPosition [
+IsoSpriteBoard >> paintTilestack: tileStack [ 
 	"Paint al sprites in stack from lowest to highest"
 	tileStack do: [ :object |
 		"Transcript show: 'IsoSpriteBoard::paintTileStack adding sprite ',object asString;cr."
-		self paintIsometricSprite: object boardPosition: boardPosition  ]
+		self positionIsometricSprite: object boardPosition: object boardPosition  ]
+]
+
+{ #category : #initialization }
+IsoSpriteBoard >> positionIsometricSprite: object boardPosition: boardPosition [
+
+	| midPoint normalizedBoardPosition spritePosition sprite |
+	midPoint := self extent x / 3 @ (self extent y / 2).
+	sprite := object sprite.
+	normalizedBoardPosition := boardPosition - cursor.
+	spritePosition := normalizedBoardPosition - sprite renderOffset.
+	isoSpritePosition := self class toISO: spritePosition * sprite scaleFactor * tileSize .
+	sprite position: isoSpritePosition + midPoint.
+	self addMorph: sprite
 ]
