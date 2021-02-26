@@ -164,7 +164,7 @@ IsoAnimatedSprite >> play: animationName [
 
 { #category : #accessing }
 IsoAnimatedSprite >> setSelectedAnimation: animation [
-
+	Transcript show:'IsoAnimatedSprite::setSelectedAnimation for ',animation asString;cr.
 	selectedAnimation ifNotNil: [ self removeMorph: selectedAnimation ].
 	selectedAnimation := animation.
 	self addMorph: selectedAnimation.
@@ -181,7 +181,7 @@ IsoAnimatedSprite >> step [
 
 { #category : #accessing }
 IsoAnimatedSprite >> stepTime [
-	^ self stepTime
+	^ stepTime
 ]
 
 { #category : #accessing }
