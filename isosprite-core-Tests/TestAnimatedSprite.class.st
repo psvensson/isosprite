@@ -1,3 +1,6 @@
+"
+I am a test AnimatedSprite. I ama Zombie which have several different animations that can be played (stance, hit, die, et.c.) in eight different directions
+"
 Class {
 	#name : #TestAnimatedSprite,
 	#superclass : #IsoAnimatedSprite,

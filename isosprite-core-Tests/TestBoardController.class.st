@@ -14,7 +14,8 @@ Class {
 		'minX',
 		'minY',
 		'maxX',
-		'maxY'
+		'maxY',
+		'player'
 	],
 	#category : #'isosprite-core-Tests'
 }
@@ -76,19 +77,26 @@ TestBoardController >> getSpritesFrom: start to: end [
 	tilesReturned := OrderedCollection new.
 	start y to: end y do: [ :y | 
 		start x to: end x do: [ :x | 
-			| tile entity stack |
-			stack := OrderedCollection new.
-			tilesReturned add: stack.
-			tile := self lookupTileAt: x @ y.
-			entity := self lookupEntityAt: x @ y.
-			tile ifNotNil: [ stack add: tile ].
-			entity ifNotNil: [ stack add: entity ] ] ].
+		tilesReturned add: (self getStackFor: x @ y) ] ].
 
 	^ tilesReturned
 ]
 
 { #category : #initialization }
+TestBoardController >> getStackFor: point [
+
+	| stack tile entity |
+	stack := OrderedCollection new.
+	tile := self lookupTileAt: point.
+	entity := self lookupEntityAt: point.
+	tile ifNotNil: [ stack add: tile ].
+	entity ifNotNil: [ stack add: entity ].
+	^ stack
+]
+
+{ #category : #initialization }
 TestBoardController >> initialize [
+
 	minX := 0.
 	maxX := 0.
 	minY := 0.
@@ -97,8 +105,12 @@ TestBoardController >> initialize [
 	self initializeEntities.
 	board := IsoSpriteBoard new.
 	board
-		dataStore: [ :start :end | self getSpritesFrom: start to: end ].	
-	board paint
+		dataStore: [ :start :end | self getSpritesFrom: start to: end ];
+		dataQuery: [ :boardPosition | self getStackFor: boardPosition ];
+		keyboardHandler: [:evt | self keyStroke: evt].
+	board paint.
+	player := ((self getStackFor: 0@0) last).
+	
 ]
 
 { #category : #initialization }
@@ -125,6 +137,28 @@ TestBoardController >> initializeTiles [
 	self addTile: 'brown_wall' at: (-1)@0.
 ]
 
+{ #category : #accessing }
+TestBoardController >> keyStroke: anEvent [
+
+	| keyValue |
+	keyValue := anEvent keyValue.
+	
+	(keyValue = 30 or: keyValue = 56) ifTrue: [ 
+		self movePlayer: self player dir: 'up' ]. "up arrow"
+	keyValue = 55 ifTrue: [ self movePlayer: self player dir: 'upleft' ]. "up arrow"
+	keyValue = 57 ifTrue: [ self movePlayer: self player dir: 'upright' ]. "up arrow"
+	keyValue = 49 ifTrue: [ self movePlayer: self player dir: 'downleft' ]. "up arrow"
+	keyValue = 51 ifTrue: [ 
+		self movePlayer: self player dir: 'downright' ]. "up arrow"
+	(keyValue = 31 or: keyValue = 50) ifTrue: [ 
+		self movePlayer: self player dir: 'down' ]. "down arrow"
+	(keyValue = 29 or: keyValue = 54) ifTrue: [ 
+		self movePlayer: self player dir: 'right' ]. "right arrow"
+	(keyValue = 28 or: keyValue = 52) ifTrue: [ 
+		self movePlayer: self player dir: 'left' ]. "left arrow"
+	
+]
+
 { #category : #initialization }
 TestBoardController >> lookupEntityAt: boardPosition [
 	^ entities at: boardPosition ifAbsent: [ nil ]
@@ -134,6 +168,18 @@ TestBoardController >> lookupEntityAt: boardPosition [
 TestBoardController >> lookupTileAt: boardPosition [
 	^ tiles at: boardPosition 
 	
+]
+
+{ #category : #accessing }
+TestBoardController >> movePlayer: obj dir: dirString [
+	| dir |
+	dir := IsoSprite directionString: dirString.
+	obj sprite move: dir.
+]
+
+{ #category : #accessing }
+TestBoardController >> player [ 
+	^ player
 ]
 
 { #category : #initialization }

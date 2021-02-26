@@ -1,3 +1,6 @@
+"
+I hold instances of tiles generated from the TestTileSprite object
+"
 Class {
 	#name : #TestOldTileObject,
 	#superclass : #TestGameObject,

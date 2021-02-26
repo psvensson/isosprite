@@ -1,3 +1,6 @@
+"
+This is a Tile object which hold instance of tiles from the testCrackedTileSprite spritesheet
+"
 Class {
 	#name : #TestTileObject,
 	#superclass : #TestGameObject,

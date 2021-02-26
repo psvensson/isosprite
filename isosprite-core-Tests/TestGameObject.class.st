@@ -1,3 +1,6 @@
+"
+I am a game object, which is something which has a position on a map/game board and which can have a IsoSprite as a representation. I am sent as a result when the IsoGameBoard asks its controller for which things can be found at a certain point on the gameboard.
+"
 Class {
 	#name : #TestGameObject,
 	#superclass : #Object,
@@ -21,6 +24,14 @@ TestGameObject >> boardPosition: aBoardPosition [
 { #category : #initialization }
 TestGameObject >> initialize [ 
 	boardPosition := 0@0.
+]
+
+{ #category : #initialization }
+TestGameObject >> move: gameObject direction: direction [
+
+	sprite move
+		direction: direction;
+		play: self spriteWalkAnimationName.
 ]
 
 { #category : #initialization }

@@ -1,3 +1,7 @@
+"
+I am a IsoSprite which define a number of named tiles from a spritesheet of cracked floor tiles.
+See my class method #generate for more detail.
+"
 Class {
 	#name : #TestCrackedTileSprite,
 	#superclass : #IsoSprite,

@@ -9,7 +9,10 @@ Class {
 		'section',
 		'animationDefinitions',
 		'animations',
-		'selectedAnimation'
+		'selectedAnimation',
+		'stepTime',
+		'stepIncrement',
+		'moveDirection'
 	],
 	#category : #'isosprite-core'
 }
@@ -75,12 +78,21 @@ IsoAnimatedSprite >> initialize [
 	direction := 1.
 	scaleFactor := 1@1.
 	animationDefinitions := Dictionary new.
-	animations := Dictionary new
+	animations := Dictionary new.
+	
 ]
 
 { #category : #accessing }
 IsoAnimatedSprite >> isSection: row [
 	^ (row findString: '[') > 0
+]
+
+{ #category : #accessing }
+IsoAnimatedSprite >> move: dir [
+	Transcript show:'IsoAnimatedSprite move for ',self asString,' direction ',dir asString;cr.
+	direction := dir.
+	moveDirection := IsoSprite getDeltaForDirectionValue: dir.
+	self startStepping
 ]
 
 { #category : #accessing }
@@ -155,7 +167,21 @@ IsoAnimatedSprite >> setSelectedAnimation: animation [
 
 	selectedAnimation ifNotNil: [ self removeMorph: selectedAnimation ].
 	selectedAnimation := animation.
-	self addMorph: selectedAnimation
+	self addMorph: selectedAnimation.
+	stepTime := animation animationStepTime .
+	stepIncrement := (1 / animation frames size ) asInteger 
+]
+
+{ #category : #accessing }
+IsoAnimatedSprite >> step [
+
+	moveDirection ifNotNil: [ 
+		self position: self position + (moveDirection * stepIncrement) ]
+]
+
+{ #category : #accessing }
+IsoAnimatedSprite >> stepTime [
+	^ self stepTime
 ]
 
 { #category : #accessing }

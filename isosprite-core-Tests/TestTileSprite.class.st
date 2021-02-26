@@ -1,3 +1,7 @@
+"
+I am a collection of named tiles from an old low-res srpitesheet;
+https://opengameart.org/content/64x64-isometric-roguelike-tiles
+"
 Class {
 	#name : #TestTileSprite,
 	#superclass : #IsoSprite,

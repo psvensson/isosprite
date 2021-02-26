@@ -1,3 +1,6 @@
+"
+I am an entity object, which knows about the default names of certain animations for the IsoAnimatedSprite or IsoAggregatedSprite which it has as representation
+"
 Class {
 	#name : #TestEntityObject,
 	#superclass : #TestGameObject,

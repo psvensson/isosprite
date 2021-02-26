@@ -73,6 +73,11 @@ IsoAnimatedImage >> addFramesFrom: start to: end [
 ]
 
 { #category : #accessing }
+IsoAnimatedImage >> animationStepTime [
+	^ (duration / frames size) asInteger 
+]
+
+{ #category : #accessing }
 IsoAnimatedImage >> direction [
 
 	^ direction
@@ -87,6 +92,12 @@ IsoAnimatedImage >> direction: anObject [
 { #category : #accessing }
 IsoAnimatedImage >> duration: d [
 	duration:= d
+]
+
+{ #category : #accessing }
+IsoAnimatedImage >> frames [
+
+	^ frames
 ]
 
 { #category : #accessing }
@@ -194,7 +205,7 @@ IsoAnimatedImage >> step [
 
 { #category : #accessing }
 IsoAnimatedImage >> stepTime [
-	^ (duration / frames size) asInteger .
+	^ self animationStepTime
 ]
 
 { #category : #accessing }

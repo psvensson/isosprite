@@ -1,3 +1,6 @@
+"
+Sample here with serveral kinds of layers
+"
 Class {
 	#name : #TestHero,
 	#superclass : #TestEntityObject,

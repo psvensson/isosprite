@@ -1,3 +1,6 @@
+"
+Sample entity holding a Zombie IsoAnimatedSprite
+"
 Class {
 	#name : #TestZombie,
 	#superclass : #TestEntityObject,

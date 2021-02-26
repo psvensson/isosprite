@@ -70,6 +70,44 @@ IsoSprite class >> addSpriteLookup: n method: method class: c [
 ]
 
 { #category : #'class initialization' }
+IsoSprite class >> directionString: dir [
+
+	dir = 'up' ifTrue: [ ^ 4 ].
+	dir = 'upleft' ifTrue: [ ^ 3 ].
+	dir = 'upright' ifTrue: [ ^ 5 ].
+	dir = 'down' ifTrue: [ ^ 8 ].
+	dir = 'downleft' ifTrue: [ ^ 1 ].
+	dir = 'downright' ifTrue: [ ^ 7 ].
+	dir = 'left' ifTrue: [ ^ 2 ].
+	dir = 'right' ifTrue: [ ^ 6 ]
+]
+
+{ #category : #'class initialization' }
+IsoSprite class >> getDeltaForDirectionValue: v [
+
+	| x y |
+	x := 0.
+	y := 0.
+	v = 1 ifTrue: [ 
+		x := -1.
+		y := 1 ].
+	v = 2 ifTrue: [ x := -1 ].
+	v = 3 ifTrue: [ 
+		x := -1.
+		y := -1 ].
+	v = 4 ifTrue: [ y := -1 ].
+	v = 5 ifTrue: [ 
+		x := 1.
+		y := -1 ].
+	v = 6 ifTrue: [ x := 1 ].
+	v = 7 ifTrue: [ 
+		x := 1.
+		y := 1 ].
+	v = 8 ifTrue: [ y := 1 ].
+	^ x @ y
+]
+
+{ #category : #'class initialization' }
 IsoSprite class >> getImageForSprite: spriteName [
 
 	| bytes |
@@ -105,6 +143,39 @@ IsoSprite class >> getSpriteFrom: spriteHolder [
 ]
 
 { #category : #'class initialization' }
+IsoSprite class >> getTargetForDirectionString: dir position: pos [
+	| x y |
+	x := pos x.
+	y := pos y.
+	(dir findString: 'up') > 0
+		ifTrue: [ y := y - 1 ].
+	(dir findString: 'down') > 0
+		ifTrue: [ y := y + 1 ].
+	(dir findString: 'left') > 0
+		ifTrue: [ x := x - 1 ].
+	(dir findString: 'right') > 0
+		ifTrue: [ x := x + 1 ].
+	^ x @ y
+]
+
+{ #category : #'class initialization' }
+IsoSprite class >> getTargetForDirectionValue: v position: pos [
+	| x y |
+	x := pos x.
+	y := pos y.
+	v = 1	ifTrue: [ x := x - 1.y := y + 1 ].
+	v = 2	ifTrue: [ x := x - 1. ].
+	v = 3	ifTrue: [ x := x - 1.y := y - 1 ].
+	v = 4	ifTrue: [ y := y + 1 ].
+	v = 5	ifTrue: [ x := x + 1.y := y - 1 ].
+	v = 6	ifTrue: [ x := x + 1. ].
+	v = 7	ifTrue: [ x := x + 1.y := y + 1 ].
+	v = 8	ifTrue: [ y := y + 1 ].	
+	
+	^ x @ y
+]
+
+{ #category : #'class initialization' }
 IsoSprite class >> initialize [
 	spriteCache := Dictionary new.
 	imageCache := Dictionary new.
@@ -127,6 +198,18 @@ IsoSprite >> direction [
 IsoSprite >> direction: anObject [
 	
 	direction := anObject
+]
+
+{ #category : #adding }
+IsoSprite >> directionString: dir [
+	dir = 'up' ifTrue: [ self direction: 4].
+	dir = 'upleft' ifTrue: [ self direction: 3].
+	dir = 'upright' ifTrue: [ self direction: 5].
+	dir = 'down' ifTrue: [ self direction: 8].
+	dir = 'downleft' ifTrue: [ self direction: 1].
+	dir = 'downright' ifTrue: [ self direction: 7].
+	dir = 'left' ifTrue: [ self direction: 2].
+	dir = 'right' ifTrue: [ self direction: 6]	
 ]
 
 { #category : #accessing }
