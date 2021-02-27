@@ -174,7 +174,7 @@ TestBoardController >> lookupTileAt: boardPosition [
 TestBoardController >> movePlayer: obj dir: dirString [
 	| dir |
 	dir := IsoSprite directionString: dirString.
-	obj sprite move: dir.
+	obj moveDirection: dir.
 ]
 
 { #category : #accessing }

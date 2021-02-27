@@ -12,7 +12,9 @@ Class {
 		'selectedAnimation',
 		'stepTime',
 		'stepIncrement',
-		'moveDirection'
+		'moveDirection',
+		'moveSteps',
+		'moveCallback'
 	],
 	#category : #'isosprite-core'
 }
@@ -74,12 +76,14 @@ IsoAnimatedSprite >> image: anObject [
 { #category : #accessing }
 IsoAnimatedSprite >> initialize [
 
-	super initialize .
+	super initialize.
 	direction := 1.
-	scaleFactor := 1@1.
+	scaleFactor := 1 @ 1.
 	animationDefinitions := Dictionary new.
 	animations := Dictionary new.
-	
+	"self
+		borderWidth: 2;
+		borderColor: Color blue"
 ]
 
 { #category : #accessing }
@@ -88,8 +92,14 @@ IsoAnimatedSprite >> isSection: row [
 ]
 
 { #category : #accessing }
-IsoAnimatedSprite >> move: dir [
-	Transcript show:'IsoAnimatedSprite move for ',self asString,' direction ',dir asString;cr.
+IsoAnimatedSprite >> move: dir moveCallback: aBlock [
+	moveCallback := aBlock.
+	moveSteps := selectedAnimation frames size.
+	stepIncrement := (1 / moveSteps) * 64.	
+	Transcript
+		show: 'IsoAnimatedSprite move for ' , self asString , ' direction '
+			, dir asString , ' start position: ' , self position asString;
+		cr.
 	direction := dir.
 	moveDirection := IsoSprite getDeltaForDirectionValue: dir.
 	self startStepping
@@ -159,24 +169,32 @@ IsoAnimatedSprite >> play: animationName [
 		scaleFactor: scaleFactor;
 		renderOffset: renderOffset;
 		direction: direction;
+		position: self position;
 		play
 ]
 
 { #category : #accessing }
 IsoAnimatedSprite >> setSelectedAnimation: animation [
-	Transcript show:'IsoAnimatedSprite::setSelectedAnimation for ',animation asString;cr.
+	"Transcript show:'IsoAnimatedSprite::setSelectedAnimation for ',animation asString;cr."
 	selectedAnimation ifNotNil: [ self removeMorph: selectedAnimation ].
 	selectedAnimation := animation.
 	self addMorph: selectedAnimation.
 	stepTime := animation animationStepTime .
-	stepIncrement := (1 / animation frames size ) asInteger 
+	
 ]
 
 { #category : #accessing }
 IsoAnimatedSprite >> step [
 
 	moveDirection ifNotNil: [ 
-		self position: self position + (moveDirection * stepIncrement) ]
+		self position: self position + (moveDirection * stepIncrement).
+		Transcript
+			show: 'sprite position = ' , self position asString;
+			cr.
+		moveSteps := moveSteps - 1.
+		moveSteps = 0 ifTrue: [ 
+			self stopStepping.
+			moveCallback value ] ]
 ]
 
 { #category : #accessing }

@@ -93,13 +93,13 @@ IsoAggregatedSprite >> play: animationName [
 
 	self removeAllMorphs.
 	selectedAtLayer valuesDo: [ :sprite | 
-		self addMorph: sprite.
+		self addMorph: sprite.		
 		"Transcript
 		show: '--------------- IsoAggregatedSprite::play ' , animationName,' for sprite ',sprite name,' scaleFactor: ',scaleFactor asString;cr."
 		sprite
+			"position: self position;"
 			direction: direction;
 			scaleFactor: scaleFactor ;
-			position: self position;
 			play: animationName ]
 ]
 
@@ -117,6 +117,8 @@ IsoAggregatedSprite >> setSelectSpriteNamed: spriteName forLayer: layerName [
 	oldSprite ifNotNil: [ self removeMorph: oldSprite ].
 	sprite := (layers at: layerName) at: spriteName.
 	selectedAtLayer at: layerName put: sprite.
+	self setSelectedAnimation: sprite animations values first.
 	anySprite := sprite.
+	sprite position: self position.
 	self addMorph: sprite
 ]

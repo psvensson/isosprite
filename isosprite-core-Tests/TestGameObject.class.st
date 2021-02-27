@@ -27,11 +27,12 @@ TestGameObject >> initialize [
 ]
 
 { #category : #initialization }
-TestGameObject >> move: gameObject direction: direction [
+TestGameObject >> moveDirection: direction [
 
 	sprite
-		play: self spriteWalkAnimationName;
 		move: direction
+		moveCallback: [ sprite play: self spriteIdleAnimationName ];
+		play: self spriteWalkAnimationName
 ]
 
 { #category : #initialization }

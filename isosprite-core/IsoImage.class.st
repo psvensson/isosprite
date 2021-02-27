@@ -45,12 +45,6 @@ IsoImage >> renderSize: r [
 ]
 
 { #category : #accessing }
-IsoImage >> scaleFactor1 [
-
-	^ scaleFactor
-]
-
-{ #category : #accessing }
 IsoImage >> scaleFactor: anObject [
 
 	scaleFactor := anObject

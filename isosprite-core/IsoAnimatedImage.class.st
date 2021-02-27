@@ -159,6 +159,12 @@ IsoAnimatedImage >> playbackAndForth [
 ]
 
 { #category : #accessing }
+IsoAnimatedImage >> poition: p [
+	super position: p.
+	currentFrame position: p
+]
+
+{ #category : #accessing }
 IsoAnimatedImage >> setCurrentFrame: image [
 
 	currentFrame ifNotNil: [ self removeMorph: currentFrame ].
