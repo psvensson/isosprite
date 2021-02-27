@@ -6,7 +6,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'boardPosition',
-		'sprite'
+		'sprite',
+		'lastBoardPosition'
 	],
 	#category : #'isosprite-core-Tests'
 }
@@ -24,15 +25,17 @@ TestGameObject >> boardPosition: aBoardPosition [
 { #category : #initialization }
 TestGameObject >> initialize [ 
 	boardPosition := 0@0.
+	lastBoardPosition := 0@0.
 ]
 
 { #category : #initialization }
-TestGameObject >> moveDirection: direction [
+TestGameObject >> lastBoardPosition [
+	^ lastBoardPosition
+]
 
-	sprite
-		move: direction
-		moveCallback: [ sprite play: self spriteIdleAnimationName ];
-		play: self spriteWalkAnimationName
+{ #category : #initialization }
+TestGameObject >> lastBoardPosition: aBoardPosition [
+	lastBoardPosition := aBoardPosition 
 ]
 
 { #category : #initialization }

@@ -14,7 +14,8 @@ Class {
 		'stepIncrement',
 		'moveDirection',
 		'moveSteps',
-		'moveCallback'
+		'moveCallback',
+		'incrementCallback'
 	],
 	#category : #'isosprite-core'
 }
@@ -62,6 +63,12 @@ IsoAnimatedSprite >> generateAnimationsFromDefinition [
 ]
 
 { #category : #accessing }
+IsoAnimatedSprite >> globalScaleFactor: x [
+	super globalScaleFactor: x.
+	selectedAnimation ifNotNil: [ selectedAnimation globalScaleFactor: x ].
+]
+
+{ #category : #accessing }
 IsoAnimatedSprite >> image [
 
 	^ image
@@ -87,13 +94,19 @@ IsoAnimatedSprite >> initialize [
 ]
 
 { #category : #accessing }
+IsoAnimatedSprite >> isAnimated [ 
+^ true
+]
+
+{ #category : #accessing }
 IsoAnimatedSprite >> isSection: row [
 	^ (row findString: '[') > 0
 ]
 
 { #category : #accessing }
-IsoAnimatedSprite >> move: dir moveCallback: aBlock [
+IsoAnimatedSprite >> move: dir moveCallback: aBlock incrementCallback: anotherBlock [
 	moveCallback := aBlock.
+	incrementCallback := anotherBlock .
 	moveSteps := selectedAnimation frames size.
 	stepIncrement := (1 / moveSteps) * 64.	
 	Transcript
@@ -167,6 +180,7 @@ IsoAnimatedSprite >> play: animationName [
 	self setSelectedAnimation: animation.
 	animation
 		scaleFactor: scaleFactor;
+		globalScaleFactor: globalScaleFactor ;
 		renderOffset: renderOffset;
 		direction: direction;
 		position: self position;
@@ -174,13 +188,23 @@ IsoAnimatedSprite >> play: animationName [
 ]
 
 { #category : #accessing }
+IsoAnimatedSprite >> renderOffset: r [
+	super renderOffset: r.
+	selectedAnimation ifNotNil: [ 
+		Transcript show:'setting renderOffset for ',name,' animation to',r asString;cr.
+		selectedAnimation renderOffset: r ].
+]
+
+{ #category : #accessing }
 IsoAnimatedSprite >> setSelectedAnimation: animation [
-	"Transcript show:'IsoAnimatedSprite::setSelectedAnimation for ',animation asString;cr."
+
+	"Transcript show:'IsoAnimatedSprite::setSelectedAnimation for ',animation asString, 'globalScalFactor ',globalScaleFactor asString;cr."
+
 	selectedAnimation ifNotNil: [ self removeMorph: selectedAnimation ].
 	selectedAnimation := animation.
+	animation globalScaleFactor: globalScaleFactor.
 	self addMorph: selectedAnimation.
-	stepTime := animation animationStepTime .
-	
+	stepTime := animation animationStepTime
 ]
 
 { #category : #accessing }
@@ -188,10 +212,9 @@ IsoAnimatedSprite >> step [
 
 	moveDirection ifNotNil: [ 
 		self position: self position + (moveDirection * stepIncrement).
-		Transcript
-			show: 'sprite position = ' , self position asString;
-			cr.
+		
 		moveSteps := moveSteps - 1.
+		incrementCallback value.
 		moveSteps = 0 ifTrue: [ 
 			self stopStepping.
 			moveCallback value ] ]
@@ -208,4 +231,9 @@ IsoAnimatedSprite >> switchSection: row [
 	section := row onlyLetters.
 	"Transcript show:'--- switching to section ',section,;cr."
 	animationDefinitions at: section put: Dictionary new
+]
+
+{ #category : #accessing }
+IsoAnimatedSprite >> toString [ 
+	^ name
 ]

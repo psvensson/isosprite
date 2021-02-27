@@ -44,7 +44,8 @@ Class {
 		'name',
 		'form',
 		'tileWidth',
-		'tileHeight'
+		'tileHeight',
+		'globalScaleFactor'
 	],
 	#classInstVars : [
 		'spriteCache',
@@ -219,11 +220,11 @@ IsoSprite >> form [
 
 { #category : #accessing }
 IsoSprite >> form: f [
-	form ifNotNil: [ self removeMorph: form ].
-	form := f.
-	form position: self position -  renderOffset.
-	form resize: scaleFactor * renderSize   .
-	self addMorph: f
+	| isoimage |
+	isoimage := IsoImage new.
+	isoimage form: f.
+	self addMorph: isoimage 
+	
 ]
 
 { #category : #accessing }
@@ -240,13 +241,24 @@ IsoSprite >> getTileFrom: img x: x y: y [
 ]
 
 { #category : #accessing }
+IsoSprite >> globalScaleFactor: x [
+	globalScaleFactor := x
+]
+
+{ #category : #accessing }
 IsoSprite >> initialize [
 
 	super initialize.
 	renderSize := 256 @ 256.
 	renderOffset := 0 @ 0.
 	scaleFactor := 1@1.
-	self color: Color transparent
+	self color: Color transparent.
+	globalScaleFactor := 1@1.
+]
+
+{ #category : #accessing }
+IsoSprite >> isAnimated [ 
+^ false
 ]
 
 { #category : #accessing }
@@ -316,4 +328,9 @@ IsoSprite >> tileHeight: h [
 { #category : #accessing }
 IsoSprite >> tileWidth: w [
 	tileWidth:= w
+]
+
+{ #category : #accessing }
+IsoSprite >> toString [
+	^ name
 ]

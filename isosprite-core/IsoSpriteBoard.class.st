@@ -17,9 +17,8 @@ Class {
 		'isoSpritePosition',
 		'dataStore',
 		'dataQuery',
-		'stepTime',
-		'animationEvents',
-		'keyboardHandler'
+		'keyboardHandler',
+		'globalScaleFactor'
 	],
 	#category : #'isosprite-core'
 }
@@ -34,12 +33,6 @@ IsoSpriteBoard class >> toISO: point [
  	isoX := x - y.
  	isoY := (x + y) / 2.
  	^ isoX @ isoY 
-]
-
-{ #category : #initialization }
-IsoSpriteBoard >> addAnimationEvent: e [
-	animationEvents add: e.
-	self startStepping.
 ]
 
 { #category : #initialization }
@@ -93,14 +86,12 @@ IsoSpriteBoard >> initialize [
 	super initialize.
 	cursor := 0 @ 0.
 	tileSize := 64.
-	"StepTime taken from the run animation of the hero flare definition"
-	stepTime := (533 / 8) asInteger. 
-	animationEvents := OrderedCollection new.
+	globalScaleFactor := 2 @ 2.
 	self
-		color: Color transparent ;
+		color: Color transparent;
 		borderWidth: 2;
 		borderColor: Color green;
-		cursorRadius: 2.
+		cursorRadius: 2
 ]
 
 { #category : #initialization }
@@ -114,23 +105,23 @@ IsoSpriteBoard >> keyboardHandler: aBlock [
 ]
 
 { #category : #initialization }
-IsoSpriteBoard >> move: gameObject direction: direction [
+IsoSpriteBoard >> move: gameObject Direction: direction [
 
-	| animationEvent |
+	| sprite |
 	Transcript
-		show:
-			'board move ' , gameObject asString , ' dir ' , direction asString,' start boardPosition ;',gameObject boardPosition asString;
+		show: 'gmaeObject ' , gameObject asString , ' moves from position '
+			, gameObject boardPosition asString;
 		cr.
-	animationEvent := Dictionary new.
-	gameObject sprite
-		direction: direction;
-		play: gameObject spriteWalkAnimationName.
-	animationEvent
-		at: #object put: gameObject;
-		at: #count put: 8;
-		at: #delta
-		put: (IsoSprite getDeltaForDirectionValue: direction) * 0.12.
-	self addAnimationEvent: animationEvent
+	sprite := gameObject sprite.
+	sprite
+		move: direction moveCallback: [ 
+			sprite play: gameObject spriteIdleAnimationName.
+			self positionIsometricObject: gameObject ]
+		incrementCallback: [ 
+			self
+				repaintStackInfFrontOfMovementFor: gameObject
+				direction: direction ];
+		play: gameObject spriteWalkAnimationName
 ]
 
 { #category : #initialization }
@@ -146,53 +137,43 @@ IsoSpriteBoard >> paintTilestack: tileStack [
 	"Paint al sprites in stack from lowest to highest"
 	tileStack do: [ :object |
 		"Transcript show: 'IsoSpriteBoard::paintTileStack adding sprite ',object asString;cr."
-		self positionIsometricSprite: object .
+		self positionIsometricObject: object .		
 		self addMorph: object sprite  ]
 ]
 
 { #category : #initialization }
-IsoSpriteBoard >> positionIsometricSprite: object [ 
+IsoSpriteBoard >> positionIsometricObject: object [
 
 	| boardPosition midPoint normalizedBoardPosition spritePosition sprite |
-	boardPosition := object boardPosition .
+	boardPosition := object boardPosition.
 	midPoint := self extent x / 3 @ (self extent y / 2).
 	sprite := object sprite.
 	normalizedBoardPosition := boardPosition - cursor.
-	spritePosition := normalizedBoardPosition .
-	isoSpritePosition := self class toISO: spritePosition * tileSize .
-	Transcript show:'positionIsometricSprite for boardPos ',boardPosition asString,' pos = ',(isoSpritePosition + midPoint) asString;cr.
-	sprite position: isoSpritePosition + midPoint.
-	
+	spritePosition := normalizedBoardPosition.
+	isoSpritePosition := self class toISO:
+		                     spritePosition * tileSize * globalScaleFactor.
+	"Transcript
+		show:
+			'positionIsometricSprite ' , sprite asString , ' for boardPos '
+			, boardPosition asString , ' pos = ' , isoSpritePosition asString;
+		cr."
+	sprite
+		globalScaleFactor: globalScaleFactor;
+		position: isoSpritePosition + self position.
+	sprite isAnimated ifTrue: [ 
+		sprite play: object spriteIdleAnimationName ]
 ]
 
 { #category : #initialization }
-IsoSpriteBoard >> runAnimationEvent: evt [
+IsoSpriteBoard >> repaintStackInfFrontOfMovementFor: gameObject direction: dir [
 
-	| object count delta |
-	object := evt at: #object.
-	count := evt at: #count.
-	count := count - 1.
-	evt at: #count put: count.
-	delta := evt at: #delta.
-	Transcript show: 'running animation event for ' , object asString , ' count = ', count asString;cr.
-	object boardPosition: object boardPosition + delta .
-	self positionIsometricSprite: object.
-	count > 0 ifFalse: [ "object sprite play: object spriteIdleAnimationName" ].
-	^ count > 0
-]
+	| delta from to |
+	delta := IsoSprite getDeltaForDirectionValue: dir.
+	from := gameObject lastBoardPosition.
+	to := gameObject boardPosition.
+	self paintTilestack: (dataQuery value: from + (0 @ 1)).
+	self paintTilestack: (dataQuery value: to + (0 @ 1))
 
-{ #category : #initialization }
-IsoSpriteBoard >> runAnimationEvents [
-	animationEvents := animationEvents select: [ :evt | self runAnimationEvent: evt ].
-]
-
-{ #category : #initialization }
-IsoSpriteBoard >> step [
-	self runAnimationEvents.
-	animationEvents size = 0 ifTrue: [ self stopStepping  ]
-]
-
-{ #category : #initialization }
-IsoSpriteBoard >> stepTime [ 
-	^ stepTime 
+	"goingto y ~= in y ifTrue: [ 
+		self paintTilestack: (dataQuery value: goingto + (0 @ 1)) ]"
 ]

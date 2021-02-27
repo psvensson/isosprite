@@ -69,7 +69,8 @@ IsoAnimatedImage >> addFramesFrom: start to: end [
 		(self getSpriteImagesColumn: f) do: [ :img | 
 			self addFrame: index direction: dir image: img.
 			dir := dir + 1 ].
-		index := index + 1 ]
+		index := index + 1 ].
+	self setCurrentFrame: (frames values last) values first.
 ]
 
 { #category : #accessing }
@@ -117,6 +118,9 @@ IsoAnimatedImage >> initialize [
 	frame := 1.
 	direction := 1.
 	playDirection := 1.
+	self
+		borderWidth: 2;
+		borderColor: Color blue
 ]
 
 { #category : #accessing }
@@ -159,7 +163,7 @@ IsoAnimatedImage >> playbackAndForth [
 ]
 
 { #category : #accessing }
-IsoAnimatedImage >> poition: p [
+IsoAnimatedImage >> position: p [
 	super position: p.
 	currentFrame position: p
 ]
@@ -167,9 +171,11 @@ IsoAnimatedImage >> poition: p [
 { #category : #accessing }
 IsoAnimatedImage >> setCurrentFrame: image [
 
+	| resizedImage |
 	currentFrame ifNotNil: [ self removeMorph: currentFrame ].
-	image position: self position.
-	currentFrame := image.
+	resizedImage := self resizeImageToScale: image.
+	resizedImage position: self position - renderOffset .
+	currentFrame := resizedImage .
 	self addMorph: currentFrame
 ]
 

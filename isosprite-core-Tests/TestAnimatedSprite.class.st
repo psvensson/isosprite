@@ -80,8 +80,9 @@ type=play_once
 TestAnimatedSprite class >> generate: spritename [
 
 	| instance img |
-	img := IsoSprite getImageForSprite: 'zombie'.
+	img := IsoSprite getImageForSprite: 'zombie'.	
 	instance := IsoAnimatedSprite from: self definition image: img.
+	instance name: 'Zombie'.
 	^ instance
 ]
 

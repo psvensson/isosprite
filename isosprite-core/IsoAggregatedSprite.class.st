@@ -35,6 +35,8 @@ IsoAggregatedSprite class >> generate [
 IsoAggregatedSprite >> addAnimatedSprite: animatedSprite layer: layerName [
 
 	| layer |
+	renderOffset := animatedSprite renderOffset.
+	Transcript show:'AggregatedSprite adding animated sprite and taking renderoffset as ',renderOffset asString;cr.
 	layer := layers at: layerName ifAbsent: [ Dictionary new ].
 	layer at: animatedSprite name put: animatedSprite.
 	layers at: layerName put: layer.
@@ -60,12 +62,8 @@ IsoAggregatedSprite >> addAnimatedSpriteFromImage: img name: n layer: layerName 
 	sprite
 		name: n;
 		scaleFactor: scaleFactor;
-		renderOffset: renderOffset;
 		direction: direction.
-	Transcript
-		show: 'IsoAggregateSprite::addAnimatedSprieFromImage name = ' , n
-			, ' layer = ' , layerName;
-		cr.
+
 	self addAnimatedSprite: sprite layer: layerName
 ]
 
@@ -79,13 +77,30 @@ IsoAggregatedSprite >> addAnimatedSpriteFromName: n layer: layerName [
 ]
 
 { #category : #adding }
+IsoAggregatedSprite >> direction: dir [
+	super direction: dir.
+	layers keysDo: [ :layerName |
+		(selectedAtLayer at: layerName) direction: dir  ]
+]
+
+{ #category : #adding }
+IsoAggregatedSprite >> globalScaleFactor: x [
+	super globalScaleFactor: x.
+	layers keysDo: [ :layerName |
+		(selectedAtLayer at: layerName) globalScaleFactor: x  ]
+]
+
+{ #category : #adding }
 IsoAggregatedSprite >> initialize [
 	super initialize.
 	self color: Color transparent.
 	layers := Dictionary new.
 	selectedAtLayer := Dictionary new.
 	direction := 1.
-	scaleFactor := 1@1
+	scaleFactor := 1@1.
+	self
+		borderWidth: 2;
+		borderColor: Color yellow
 ]
 
 { #category : #adding }
@@ -94,13 +109,23 @@ IsoAggregatedSprite >> play: animationName [
 	self removeAllMorphs.
 	selectedAtLayer valuesDo: [ :sprite | 
 		self addMorph: sprite.		
-		"Transcript
-		show: '--------------- IsoAggregatedSprite::play ' , animationName,' for sprite ',sprite name,' scaleFactor: ',scaleFactor asString;cr."
+		Transcript
+		show: '--------------- IsoAggregatedSprite::play ' , animationName,' for sprite ',sprite name,' renderOffset: ',renderOffset asString;cr.
 		sprite
 			"position: self position;"
 			direction: direction;
+			renderOffset: renderOffset ;
 			scaleFactor: scaleFactor ;
+			globalScaleFactor: globalScaleFactor ;
 			play: animationName ]
+]
+
+{ #category : #adding }
+IsoAggregatedSprite >> renderOffset: r [
+	Transcript show:'AggregatedSprite got renderOffset ',r asString;cr.
+	super renderOffset: r.
+	layers keysDo: [ :layerName |
+		(selectedAtLayer at: layerName) renderOffset: r  ]
 ]
 
 { #category : #adding }
@@ -119,6 +144,8 @@ IsoAggregatedSprite >> setSelectSpriteNamed: spriteName forLayer: layerName [
 	selectedAtLayer at: layerName put: sprite.
 	self setSelectedAnimation: sprite animations values first.
 	anySprite := sprite.
-	sprite position: self position.
+	sprite
+		renderOffset: renderOffset;
+		position: self position.
 	self addMorph: sprite
 ]

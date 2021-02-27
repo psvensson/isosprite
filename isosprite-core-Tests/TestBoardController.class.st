@@ -29,7 +29,7 @@ TestBoardController >> addEntity: entityName at: boardPosition [
 		entity sprite selectSpriteNamed: 'clothes' forLayer: 'body'.
 		entity sprite selectSpriteNamed: 'long_sword' forLayer: 'wepaon' ].
 	entityName = 'zombie' ifTrue: [ entity := TestZombie create ].
-	entity sprite play: entity spriteIdleAnimationName.
+	
 	entity boardPosition: boardPosition.
 	entities at: boardPosition put: entity
 ]
@@ -144,18 +144,18 @@ TestBoardController >> keyStroke: anEvent [
 	keyValue := anEvent keyValue.
 	
 	(keyValue = 30 or: keyValue = 56) ifTrue: [ 
-		self movePlayer: self player dir: 'up' ]. "up arrow"
-	keyValue = 55 ifTrue: [ self movePlayer: self player dir: 'upleft' ]. "up arrow"
-	keyValue = 57 ifTrue: [ self movePlayer: self player dir: 'upright' ]. "up arrow"
-	keyValue = 49 ifTrue: [ self movePlayer: self player dir: 'downleft' ]. "up arrow"
+		self moveObject: self player dir: 'up' ]. "up arrow"
+	keyValue = 55 ifTrue: [ self moveObject: self player dir: 'upleft' ]. "up arrow"
+	keyValue = 57 ifTrue: [ self moveObject: self player dir: 'upright' ]. "up arrow"
+	keyValue = 49 ifTrue: [ self moveObject: self player dir: 'downleft' ]. "up arrow"
 	keyValue = 51 ifTrue: [ 
-		self movePlayer: self player dir: 'downright' ]. "up arrow"
+		self moveObject: self player dir: 'downright' ]. "up arrow"
 	(keyValue = 31 or: keyValue = 50) ifTrue: [ 
-		self movePlayer: self player dir: 'down' ]. "down arrow"
+		self moveObject: self player dir: 'down' ]. "down arrow"
 	(keyValue = 29 or: keyValue = 54) ifTrue: [ 
-		self movePlayer: self player dir: 'right' ]. "right arrow"
+		self moveObject: self player dir: 'right' ]. "right arrow"
 	(keyValue = 28 or: keyValue = 52) ifTrue: [ 
-		self movePlayer: self player dir: 'left' ]. "left arrow"
+		self moveObject: self player dir: 'left' ]. "left arrow"
 	
 ]
 
@@ -171,10 +171,14 @@ TestBoardController >> lookupTileAt: boardPosition [
 ]
 
 { #category : #accessing }
-TestBoardController >> movePlayer: obj dir: dirString [
+TestBoardController >> moveObject: obj dir: dirString [
+
 	| dir |
 	dir := IsoSprite directionString: dirString.
-	obj moveDirection: dir.
+	board move: obj Direction: dir.
+	obj boardPosition:
+		obj boardPosition + (IsoSprite getDeltaForDirectionValue: dir).
+	Transcript show:'TestBoardController::moveObject boardPosition is now ',obj boardPosition asString;cr.	
 ]
 
 { #category : #accessing }

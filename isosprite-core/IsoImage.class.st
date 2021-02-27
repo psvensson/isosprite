@@ -9,7 +9,9 @@ Class {
 		'scaleFactor',
 		'transparency',
 		'renderSize',
-		'renderOffset'
+		'renderOffset',
+		'globalScaleFactor',
+		'form'
 	],
 	#category : #'isosprite-core'
 }
@@ -27,11 +29,34 @@ IsoImage >> adjustment: anObject [
 ]
 
 { #category : #accessing }
+IsoImage >> form: f [
+	form ifNotNil: [ self removeMorph: form ].
+	form := f.
+	form position: self position -  renderOffset.
+	form resize: scaleFactor * renderSize   .
+	self addMorph: f
+]
+
+{ #category : #accessing }
+IsoImage >> globalScaleFactor: anObject [
+
+	globalScaleFactor := anObject
+]
+
+{ #category : #accessing }
 IsoImage >> initialize [ 
 	super initialize .
+	self color: Color transparent .
 	renderSize := 128@128.
 	renderOffset := 0@0.
 	scaleFactor := 2.
+	globalScaleFactor := 1@1.
+]
+
+{ #category : #accessing }
+IsoImage >> position: p [
+	super position: p.
+	self resizecurrentImage 
 ]
 
 { #category : #accessing }
@@ -42,6 +67,22 @@ IsoImage >> renderOffset: r [
 { #category : #accessing }
 IsoImage >> renderSize: r [
 	renderSize := r
+]
+
+{ #category : #accessing }
+IsoImage >> resizeImageToScale: image [
+	| resize |
+	resize := globalScaleFactor * (image width @ image height).
+	^ image copy resize: resize
+]
+
+{ #category : #accessing }
+IsoImage >> resizecurrentImage [
+
+	| resize |
+	form ifNotNil: [ 
+		resize := globalScaleFactor * (form width @ form height).
+		form resize: resize ]
 ]
 
 { #category : #accessing }
