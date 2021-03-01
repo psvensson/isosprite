@@ -19,7 +19,8 @@ Class {
 		'frame',
 		'direction',
 		'playDirection',
-		'name'
+		'name',
+		'callback'
 	],
 	#category : #'isosprite-core'
 }
@@ -118,9 +119,9 @@ IsoAnimatedImage >> initialize [
 	frame := 1.
 	direction := 1.
 	playDirection := 1.
-	self
+	"self
 		borderWidth: 2;
-		borderColor: Color blue
+		borderColor: Color blue"
 ]
 
 { #category : #accessing }
@@ -137,6 +138,14 @@ IsoAnimatedImage >> play [
 ]
 
 { #category : #accessing }
+IsoAnimatedImage >> play: aBlock [
+	callback := aBlock.
+	"Transcript show:'IsoAnimatedImage::play ',name,' scaleFactor ',scaleFactor asString;cr."
+
+	self startStepping
+]
+
+{ #category : #accessing }
 IsoAnimatedImage >> playLooped [
 
 	frame := frame + 1.
@@ -144,12 +153,15 @@ IsoAnimatedImage >> playLooped [
 ]
 
 { #category : #accessing }
-IsoAnimatedImage >> playOnce [ 
-	frame := frame + 1 . 	
-	frame > frames size
-		ifFalse: [ ^ self ].
+IsoAnimatedImage >> playOnce [
+
+	frame := frame + 1.
+	frame > frames size ifFalse: [ ^ self ].
 	frame := 1.
-	self stopStepping .
+	self stopStepping.
+	callback ifNotNil: [ 
+		callback value.
+		callback := nil ]
 ]
 
 { #category : #accessing }
@@ -165,7 +177,7 @@ IsoAnimatedImage >> playbackAndForth [
 { #category : #accessing }
 IsoAnimatedImage >> position: p [
 	super position: p.
-	currentFrame position: p
+	"currentFrame position: p"
 ]
 
 { #category : #accessing }

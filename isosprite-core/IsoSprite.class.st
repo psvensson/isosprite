@@ -45,7 +45,8 @@ Class {
 		'form',
 		'tileWidth',
 		'tileHeight',
-		'globalScaleFactor'
+		'globalScaleFactor',
+		'diff'
 	],
 	#classInstVars : [
 		'spriteCache',
@@ -190,6 +191,16 @@ IsoSprite class >> registerSpriteFactoryFor: spriteName factory: aBlock [
 ]
 
 { #category : #accessing }
+IsoSprite >> diff [
+	^ diff
+]
+
+{ #category : #accessing }
+IsoSprite >> diff: d [
+	diff:= d
+]
+
+{ #category : #accessing }
 IsoSprite >> direction [
 
 	^ direction
@@ -220,11 +231,13 @@ IsoSprite >> form [
 
 { #category : #accessing }
 IsoSprite >> form: f [
+
 	| isoimage |
 	isoimage := IsoImage new.
-	isoimage form: f.
-	self addMorph: isoimage 
-	
+	isoimage
+		renderOffset: renderOffset;
+		form: f.
+	self addMorph: isoimage
 ]
 
 { #category : #accessing }
@@ -254,6 +267,10 @@ IsoSprite >> initialize [
 	scaleFactor := 1@1.
 	self color: Color transparent.
 	globalScaleFactor := 1@1.
+	diff := 0@0.
+	"self
+		borderWidth: 2;
+		borderColor: Color orange"
 ]
 
 { #category : #accessing }

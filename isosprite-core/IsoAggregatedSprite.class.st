@@ -13,7 +13,8 @@ Class {
 	#instVars : [
 		'layers',
 		'selectedAtLayer',
-		'anySprite'
+		'anySprite',
+		'currentAnimationname'
 	],
 	#classInstVars : [
 		'cache'
@@ -36,7 +37,7 @@ IsoAggregatedSprite >> addAnimatedSprite: animatedSprite layer: layerName [
 
 	| layer |
 	renderOffset := animatedSprite renderOffset.
-	Transcript show:'AggregatedSprite adding animated sprite and taking renderoffset as ',renderOffset asString;cr.
+	"Transcript show:'AggregatedSprite adding animated sprite and taking renderoffset as ',renderOffset asString;cr."
 	layer := layers at: layerName ifAbsent: [ Dictionary new ].
 	layer at: animatedSprite name put: animatedSprite.
 	layers at: layerName put: layer.
@@ -98,19 +99,20 @@ IsoAggregatedSprite >> initialize [
 	selectedAtLayer := Dictionary new.
 	direction := 1.
 	scaleFactor := 1@1.
-	self
+	"self
 		borderWidth: 2;
-		borderColor: Color yellow
+		borderColor: Color yellow"
 ]
 
 { #category : #adding }
 IsoAggregatedSprite >> play: animationName [
 
+	currentAnimationname := animationName .
 	self removeAllMorphs.
 	selectedAtLayer valuesDo: [ :sprite | 
 		self addMorph: sprite.		
-		Transcript
-		show: '--------------- IsoAggregatedSprite::play ' , animationName,' for sprite ',sprite name,' renderOffset: ',renderOffset asString;cr.
+		"Transcript
+		show: '--------------- IsoAggregatedSprite::play ' , animationName,' for sprite ',sprite name,' renderOffset: ',renderOffset asString;cr."
 		sprite
 			"position: self position;"
 			direction: direction;
@@ -118,6 +120,24 @@ IsoAggregatedSprite >> play: animationName [
 			scaleFactor: scaleFactor ;
 			globalScaleFactor: globalScaleFactor ;
 			play: animationName ]
+]
+
+{ #category : #adding }
+IsoAggregatedSprite >> play: animationName callback: aBlock [
+
+	currentAnimationname := animationName .
+	self removeAllMorphs.
+	selectedAtLayer valuesDo: [ :sprite | 
+		self addMorph: sprite.		
+		"Transcript
+		show: '--------------- IsoAggregatedSprite::play ' , animationName,' for sprite ',sprite name,' renderOffset: ',renderOffset asString;cr."
+		sprite
+			"position: self position;"
+			direction: direction;
+			renderOffset: renderOffset ;
+			scaleFactor: scaleFactor ;
+			globalScaleFactor: globalScaleFactor ;
+			play: animationName callback: aBlock ]
 ]
 
 { #category : #adding }
@@ -129,23 +149,27 @@ IsoAggregatedSprite >> renderOffset: r [
 ]
 
 { #category : #adding }
-IsoAggregatedSprite >> selectSpriteNamed: spriteName forLayer: layerName [
+IsoAggregatedSprite >> selectSpriteForLayer: layerName [
 
-	selectedAtLayer at: layerName ifAbsent: [ ^nil ]
+	^ selectedAtLayer at: layerName ifAbsent: [ ^nil ]
 ]
 
 { #category : #adding }
 IsoAggregatedSprite >> setSelectSpriteNamed: spriteName forLayer: layerName [
 
 	| sprite oldSprite |
-	oldSprite := self selectSpriteNamed: spriteName forLayer: layerName.
+	oldSprite := self selectSpriteForLayer: layerName.
 	oldSprite ifNotNil: [ self removeMorph: oldSprite ].
 	sprite := (layers at: layerName) at: spriteName.
 	selectedAtLayer at: layerName put: sprite.
 	self setSelectedAnimation: sprite animations values first.
 	anySprite := sprite.
 	sprite
+		position: self position;
+		direction: direction;
 		renderOffset: renderOffset;
-		position: self position.
+		scaleFactor: scaleFactor;
+		globalScaleFactor: globalScaleFactor.
+	currentAnimationname ifNotNil: [ sprite play: currentAnimationname ].
 	self addMorph: sprite
 ]

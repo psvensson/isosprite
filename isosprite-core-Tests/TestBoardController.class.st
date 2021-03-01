@@ -26,10 +26,10 @@ TestBoardController >> addEntity: entityName at: boardPosition [
 	| entity |
 	entityName = 'hero' ifTrue: [ 
 		entity := TestHero create.
-		entity sprite selectSpriteNamed: 'clothes' forLayer: 'body'.
-		entity sprite selectSpriteNamed: 'long_sword' forLayer: 'wepaon' ].
+		entity sprite setSelectSpriteNamed: 'clothes' forLayer: 'body'.
+		entity sprite setSelectSpriteNamed: 'long_sword' forLayer: 'weapon' ].
 	entityName = 'zombie' ifTrue: [ entity := TestZombie create ].
-	
+	entity sprite play: entity spriteIdleAnimationName .
 	entity boardPosition: boardPosition.
 	entities at: boardPosition put: entity
 ]
@@ -59,6 +59,12 @@ TestBoardController >> addTile: tileName at: boardPosition [
 ]
 
 { #category : #accessing }
+TestBoardController >> attack [
+	player sprite play: 'swing' callback: [ 
+		player sprite play: 'stance' ]
+]
+
+{ #category : #accessing }
 TestBoardController >> board [
 
 	^ board
@@ -68,6 +74,26 @@ TestBoardController >> board [
 TestBoardController >> board: anObject [
 
 	board := anObject
+]
+
+{ #category : #accessing }
+TestBoardController >> equipItem [
+
+	| current |
+	current := player sprite selectSpriteForLayer: 'body'.
+	Transcript show:'testBoardControleer.equipItem current = ',current name;cr.
+	current name = 'clothes' ifTrue: [ 
+		player sprite
+			setSelectSpriteNamed: 'leather_armour'
+			forLayer: 'body' ].
+	current name = 'leather_armour' ifTrue: [ 
+		player sprite
+			setSelectSpriteNamed: 'steel_armour'
+			forLayer: 'body' ]	.
+	current name = 'steel_armour' ifTrue: [ 
+		player sprite
+			setSelectSpriteNamed: 'clothes'
+			forLayer: 'body' ]		
 ]
 
 { #category : #initialization }
@@ -156,6 +182,9 @@ TestBoardController >> keyStroke: anEvent [
 		self moveObject: self player dir: 'right' ]. "right arrow"
 	(keyValue = 28 or: keyValue = 52) ifTrue: [ 
 		self moveObject: self player dir: 'left' ]. "left arrow"
+	keyValue = 119 ifTrue: [ self wieldItem ].
+	keyValue = 101 ifTrue: [ self equipItem ].
+	keyValue = 113 ifTrue: [ self attack].
 	
 ]
 
@@ -166,7 +195,7 @@ TestBoardController >> lookupEntityAt: boardPosition [
 
 { #category : #initialization }
 TestBoardController >> lookupTileAt: boardPosition [
-	^ tiles at: boardPosition 
+	^ tiles at: boardPosition ifAbsent: [ nil ]
 	
 ]
 
@@ -176,8 +205,11 @@ TestBoardController >> moveObject: obj dir: dirString [
 	| dir |
 	dir := IsoSprite directionString: dirString.
 	board move: obj Direction: dir.
+	entities removeKey: obj boardPosition ifAbsent:[].
+	obj lastBoardPosition: obj boardPosition .
 	obj boardPosition:
 		obj boardPosition + (IsoSprite getDeltaForDirectionValue: dir).
+	entities at: obj boardPosition put: obj.	
 	Transcript show:'TestBoardController::moveObject boardPosition is now ',obj boardPosition asString;cr.	
 ]
 
@@ -192,4 +224,19 @@ TestBoardController >> setMinMaxvalues: boardPosition [
 	minY := boardPosition y min: minY.
 	maxX := boardPosition x max: maxX.
 	maxY := boardPosition y max: maxY.
+]
+
+{ #category : #accessing }
+TestBoardController >> wieldItem [
+
+	| current |
+	current := player sprite selectSpriteForLayer: 'weapon'.
+	current name = 'dagger' ifTrue: [ 
+		player sprite setSelectSpriteNamed: 'short_sword' forLayer: 'weapon' ].
+	current name = 'short_sword' ifTrue: [ 
+		player sprite setSelectSpriteNamed: 'long_sword' forLayer: 'weapon' ].
+	current name = 'long_sword' ifTrue: [ 
+		player sprite setSelectSpriteNamed: 'short_bow' forLayer: 'weapon' ].
+	current name = 'short_bow' ifTrue: [ 
+		player sprite setSelectSpriteNamed: 'dagger' forLayer: 'weapon' ]
 ]

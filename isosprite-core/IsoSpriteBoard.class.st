@@ -13,15 +13,20 @@ Class {
 	#instVars : [
 		'cursor',
 		'cursorRadius',
-		'tileSize',
 		'isoSpritePosition',
 		'dataStore',
 		'dataQuery',
 		'keyboardHandler',
-		'globalScaleFactor'
+		'globalScaleFactor',
+		'animations'
 	],
 	#category : #'isosprite-core'
 }
+
+{ #category : #'as yet unclassified' }
+IsoSpriteBoard class >> tileSize [ 
+	^ 64.
+]
 
 { #category : #'as yet unclassified' }
 IsoSpriteBoard class >> toISO: point [
@@ -40,7 +45,7 @@ IsoSpriteBoard >> cursorRadius: aNumber [
 
 	| side |
 	cursorRadius := aNumber.
-	side := 1 + (4 * cursorRadius) * tileSize.
+	side := 1 + (4 * cursorRadius) * self class tileSize.
 	self extent: ("self class toISO: "side @ side)
 ]
 
@@ -58,6 +63,32 @@ IsoSpriteBoard >> dataStore: aBlock [
 { #category : #initialization }
 IsoSpriteBoard >> getEndCoord [
 	^ cursor + (cursorRadius@cursorRadius )
+]
+
+{ #category : #initialization }
+IsoSpriteBoard >> getScaledSpritePositionFrom: boardPosition [
+	| midPoint normalizedBoardPosition spriteBoardPosition |
+	midPoint := self extent x / 3 @ (self extent y / 2).
+	normalizedBoardPosition := boardPosition - cursor.
+	spriteBoardPosition := normalizedBoardPosition.
+	^ spriteBoardPosition * self class tileSize * globalScaleFactor.
+]
+
+{ #category : #initialization }
+IsoSpriteBoard >> getSpriteInFrontOf: boardPosition direction: dir [
+
+	| diff frontStack |
+	dir = 2 ifTrue: [ diff := 0 @ 1 ].
+	dir = 3 ifTrue: [ diff := 0 @ 1 ].
+	dir = 4 ifTrue: [ diff := 1 @ 0 ].
+	dir = 5 ifTrue: [ diff := 1 @ 0 ].
+	dir = 6 ifTrue: [ diff := 0 @ 1 ].
+	dir = 7 ifTrue: [ diff := 1 @ 0 ].
+	dir = 8 ifTrue: [ diff := 1 @ 0 ].
+	frontStack := dataQuery value: boardPosition + diff.
+	frontStack size > 0
+		ifTrue: [ ^ frontStack first sprite ]
+		ifFalse: [ ^ nil ]
 ]
 
 { #category : #initialization }
@@ -84,14 +115,14 @@ IsoSpriteBoard >> handlesKeyboard: anEvent [
 IsoSpriteBoard >> initialize [
 
 	super initialize.
-	cursor := 0 @ 0.
-	tileSize := 64.
+	cursor := 0 @ 0.	
 	globalScaleFactor := 2 @ 2.
 	self
 		color: Color transparent;
 		borderWidth: 2;
 		borderColor: Color green;
-		cursorRadius: 2
+		cursorRadius: 2.
+	animations := OrderedCollection new.	
 ]
 
 { #category : #initialization }
@@ -107,21 +138,14 @@ IsoSpriteBoard >> keyboardHandler: aBlock [
 { #category : #initialization }
 IsoSpriteBoard >> move: gameObject Direction: direction [
 
-	| sprite |
-	Transcript
-		show: 'gmaeObject ' , gameObject asString , ' moves from position '
-			, gameObject boardPosition asString;
-		cr.
-	sprite := gameObject sprite.
-	sprite
-		move: direction moveCallback: [ 
-			sprite play: gameObject spriteIdleAnimationName.
-			self positionIsometricObject: gameObject ]
-		incrementCallback: [ 
-			self
-				repaintStackInfFrontOfMovementFor: gameObject
-				direction: direction ];
-		play: gameObject spriteWalkAnimationName
+	| anim |
+	
+	anim := IsoSpriteBoardAnimation new.
+	anim gameObject: gameObject  direction: direction.
+	animations add: anim.
+	self isStepping ifFalse: [ self startStepping  ]
+	
+	
 ]
 
 { #category : #initialization }
@@ -137,6 +161,7 @@ IsoSpriteBoard >> paintTilestack: tileStack [
 	"Paint al sprites in stack from lowest to highest"
 	tileStack do: [ :object |
 		"Transcript show: 'IsoSpriteBoard::paintTileStack adding sprite ',object asString;cr."
+		self removeMorph: object sprite.
 		self positionIsometricObject: object .		
 		self addMorph: object sprite  ]
 ]
@@ -144,36 +169,35 @@ IsoSpriteBoard >> paintTilestack: tileStack [
 { #category : #initialization }
 IsoSpriteBoard >> positionIsometricObject: object [
 
-	| boardPosition midPoint normalizedBoardPosition spritePosition sprite |
+	| boardPosition |
 	boardPosition := object boardPosition.
-	midPoint := self extent x / 3 @ (self extent y / 2).
-	sprite := object sprite.
-	normalizedBoardPosition := boardPosition - cursor.
-	spritePosition := normalizedBoardPosition.
-	isoSpritePosition := self class toISO:
-		                     spritePosition * tileSize * globalScaleFactor.
-	"Transcript
-		show:
-			'positionIsometricSprite ' , sprite asString , ' for boardPos '
-			, boardPosition asString , ' pos = ' , isoSpritePosition asString;
-		cr."
-	sprite
-		globalScaleFactor: globalScaleFactor;
-		position: isoSpritePosition + self position.
-	sprite isAnimated ifTrue: [ 
-		sprite play: object spriteIdleAnimationName ]
+	self positionSprite: object sprite from: boardPosition withDiff: object sprite diff
 ]
 
 { #category : #initialization }
-IsoSpriteBoard >> repaintStackInfFrontOfMovementFor: gameObject direction: dir [
+IsoSpriteBoard >> positionSprite: sprite from: boardPosition withDiff: diff [
 
-	| delta from to |
-	delta := IsoSprite getDeltaForDirectionValue: dir.
-	from := gameObject lastBoardPosition.
-	to := gameObject boardPosition.
-	self paintTilestack: (dataQuery value: from + (0 @ 1)).
-	self paintTilestack: (dataQuery value: to + (0 @ 1))
+	| spritePosition totalSpritePosition |
+	"Transcript show:'positionSprite ',sprite asString ,' diff = ',diff asString;cr."
+	spritePosition := self getScaledSpritePositionFrom: boardPosition.
+	isoSpritePosition := self class toISO: spritePosition - diff.
+	totalSpritePosition := isoSpritePosition + self position.
 
-	"goingto y ~= in y ifTrue: [ 
-		self paintTilestack: (dataQuery value: goingto + (0 @ 1)) ]"
+	sprite
+		globalScaleFactor: globalScaleFactor;
+		position: totalSpritePosition.
+	self addMorph: sprite
+]
+
+{ #category : #'stepping and presenter' }
+IsoSpriteBoard >> step [
+	self removeAllMorphs .
+	animations := animations select: [ :anim | anim move ].
+	(animations size = 0) ifTrue: [ self stopStepping ].
+	self paint
+]
+
+{ #category : #stepping }
+IsoSpriteBoard >> stepTime [
+	^ 100
 ]

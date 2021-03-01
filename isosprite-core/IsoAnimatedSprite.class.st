@@ -104,21 +104,6 @@ IsoAnimatedSprite >> isSection: row [
 ]
 
 { #category : #accessing }
-IsoAnimatedSprite >> move: dir moveCallback: aBlock incrementCallback: anotherBlock [
-	moveCallback := aBlock.
-	incrementCallback := anotherBlock .
-	moveSteps := selectedAnimation frames size.
-	stepIncrement := (1 / moveSteps) * 64.	
-	Transcript
-		show: 'IsoAnimatedSprite move for ' , self asString , ' direction '
-			, dir asString , ' start position: ' , self position asString;
-		cr.
-	direction := dir.
-	moveDirection := IsoSprite getDeltaForDirectionValue: dir.
-	self startStepping
-]
-
-{ #category : #accessing }
 IsoAnimatedSprite >> parse: aDefinition [
 
 	| rows |
@@ -188,41 +173,42 @@ IsoAnimatedSprite >> play: animationName [
 ]
 
 { #category : #accessing }
+IsoAnimatedSprite >> play: animationName callback: aBlock [
+
+	| animation |
+	animation := animations at: animationName.
+	self setSelectedAnimation: animation.
+	animation
+		scaleFactor: scaleFactor;
+		globalScaleFactor: globalScaleFactor ;
+		renderOffset: renderOffset;
+		direction: direction;
+		position: self position;
+		play: aBlock 
+]
+
+{ #category : #accessing }
 IsoAnimatedSprite >> renderOffset: r [
 	super renderOffset: r.
 	selectedAnimation ifNotNil: [ 
-		Transcript show:'setting renderOffset for ',name,' animation to',r asString;cr.
+		"Transcript show:'setting renderOffset for ',name,' animation to',r asString;cr."
 		selectedAnimation renderOffset: r ].
 ]
 
 { #category : #accessing }
-IsoAnimatedSprite >> setSelectedAnimation: animation [
+IsoAnimatedSprite >> selectedAnimation [
 
-	"Transcript show:'IsoAnimatedSprite::setSelectedAnimation for ',animation asString, 'globalScalFactor ',globalScaleFactor asString;cr."
+	^ selectedAnimation 
+]
+
+{ #category : #accessing }
+IsoAnimatedSprite >> setSelectedAnimation: animation [
 
 	selectedAnimation ifNotNil: [ self removeMorph: selectedAnimation ].
 	selectedAnimation := animation.
 	animation globalScaleFactor: globalScaleFactor.
 	self addMorph: selectedAnimation.
 	stepTime := animation animationStepTime
-]
-
-{ #category : #accessing }
-IsoAnimatedSprite >> step [
-
-	moveDirection ifNotNil: [ 
-		self position: self position + (moveDirection * stepIncrement).
-		
-		moveSteps := moveSteps - 1.
-		incrementCallback value.
-		moveSteps = 0 ifTrue: [ 
-			self stopStepping.
-			moveCallback value ] ]
-]
-
-{ #category : #accessing }
-IsoAnimatedSprite >> stepTime [
-	^ stepTime
 ]
 
 { #category : #accessing }

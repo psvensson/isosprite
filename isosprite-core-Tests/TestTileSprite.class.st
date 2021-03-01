@@ -18,7 +18,7 @@ TestTileSprite class >> generate: spritename [
 	instance := self new.
 	image := IsoSprite getImageForSprite: 'classic_tiles'.
 	instance
-		renderOffset: 0@0;
+		renderOffset: (64)@(100);
 		scaleFactor: 1@1;
 		tileHeight:64;
 		tileWidth:64;

@@ -8,5 +8,5 @@ Class {
 IsoSpriteBoardTest >> testIsoSpriteBoardCreation [
 	| boardController |
 	boardController := TestBoardController new.
-	boardController inspect
+	boardController board openInWorld
 ]
