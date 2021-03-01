@@ -125,19 +125,23 @@ IsoAggregatedSprite >> play: animationName [
 { #category : #adding }
 IsoAggregatedSprite >> play: animationName callback: aBlock [
 
-	currentAnimationname := animationName .
+	| calls |
+	currentAnimationname := animationName.
 	self removeAllMorphs.
+	calls := selectedAtLayer values size.
 	selectedAtLayer valuesDo: [ :sprite | 
-		self addMorph: sprite.		
+		self addMorph: sprite.
 		"Transcript
 		show: '--------------- IsoAggregatedSprite::play ' , animationName,' for sprite ',sprite name,' renderOffset: ',renderOffset asString;cr."
 		sprite
-			"position: self position;"
 			direction: direction;
-			renderOffset: renderOffset ;
-			scaleFactor: scaleFactor ;
-			globalScaleFactor: globalScaleFactor ;
-			play: animationName callback: aBlock ]
+			renderOffset: renderOffset;
+			scaleFactor: scaleFactor;
+			globalScaleFactor: globalScaleFactor;
+			play: animationName callback: [ 
+				calls := calls - 1.
+				calls = 0 ifTrue: [ aBlock value ] ]
+		"position: self position;" ]
 ]
 
 { #category : #adding }
@@ -152,6 +156,11 @@ IsoAggregatedSprite >> renderOffset: r [
 IsoAggregatedSprite >> selectSpriteForLayer: layerName [
 
 	^ selectedAtLayer at: layerName ifAbsent: [ ^nil ]
+]
+
+{ #category : #adding }
+IsoAggregatedSprite >> selectedAnimation [ 
+	^ selectedAtLayer values first selectedAnimation 
 ]
 
 { #category : #adding }

@@ -149,13 +149,17 @@ IsoAnimatedImage >> play: aBlock [
 IsoAnimatedImage >> playLooped [
 
 	frame := frame + 1.
-	frame > frames size ifTrue: [ frame := 1 ].
+	"Transcript
+		show: 'playLooped drawing frame ' , frame asString;
+		cr."
+	frame > frames size ifTrue: [ frame := 1 ]
 ]
 
 { #category : #accessing }
 IsoAnimatedImage >> playOnce [
 
 	frame := frame + 1.
+	"Transcript show:'playOnce drawing frame ',frame asString;cr."
 	frame > frames size ifFalse: [ ^ self ].
 	frame := 1.
 	self stopStepping.

@@ -199,5 +199,5 @@ IsoSpriteBoard >> step [
 
 { #category : #stepping }
 IsoSpriteBoard >> stepTime [
-	^ 100
+	^ 67
 ]

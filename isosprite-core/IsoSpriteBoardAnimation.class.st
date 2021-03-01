@@ -19,20 +19,21 @@ IsoSpriteBoardAnimation >> gameObject: obj direction: direction [
 	object := obj.
 	sprite := object sprite.
 	currentStep := 0.
+	sprite
+		direction: direction;
+		play: object spriteWalkAnimationName.
 	moveSteps := sprite selectedAnimation frames size.
 	stepIncrement := 1 / moveSteps * IsoSpriteBoard tileSize.
 	moveDirection := IsoSprite getDeltaForDirectionValue: direction.
 	directionIncrement := moveDirection * stepIncrement.
-	sprite
-		direction: direction;
-		play: object spriteWalkAnimationName
+	
 ]
 
 { #category : #'as yet unclassified' }
 IsoSpriteBoardAnimation >> move [
 
 	| notDone d |	
-	d := directionIncrement * (moveSteps - currentStep - 1).
+	d := directionIncrement * (moveSteps - currentStep).
 	currentStep := currentStep + 1.
 	sprite diff: d.
 	notDone := currentStep < moveSteps.
