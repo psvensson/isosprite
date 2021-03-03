@@ -31,7 +31,7 @@ TestBoardController >> addCaveFloorTile: tileName at: boardPosition [
 	tile := TestCaveTileObject create: tileName.
 	tile boardPosition: boardPosition.
 	floorTiles at: boardPosition put: tile.
-	Transcript show: 'adding floor tile ',tile asString,' at ',boardPosition asString;cr.
+	"Transcript show: 'adding floor tile ',tile asString,' at ',boardPosition asString;cr."
 ]
 
 { #category : #initialization }
@@ -193,7 +193,7 @@ TestBoardController >> initializeTiles [
 			val := self marchingSquaresValueFor: x @ y.
 			tileno := 16 atRandom.
 			self addCaveFloorTile: 'tile_' , tileno asString at: xx @ xy.
-			val > 0 ifTrue: [ 
+			(val > 0 and: [val < 15]) ifTrue: [ 
 				self addCaveWallTile: 'case_' , val asString at: xx @ xy ] ] ]
 ]
 
@@ -254,7 +254,7 @@ TestBoardController >> marchingSquaresValueFor: point [
 	b = 1 ifTrue: [ val := val + 4 ].
 	c = 1 ifTrue: [ val := val + 2 ].
 	d = 1 ifTrue: [ val := val + 1 ].
-	"Transcript show: point asString,' - ',a asString,' ',b asString,' ',c asString,' ',d asString,' -> ',val asString;cr."
+	Transcript show: point asString,' - ',a asString,' ',b asString,' ',c asString,' ',d asString,' -> ',val asString;cr.
 	^ val
 ]
 
@@ -286,13 +286,13 @@ TestBoardController >> sampleCaveData [
 		{ 1 . 0 . 0 . 0 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 0 . 0 . 0 . 1 }.
 		{ 1 . 0 . 0 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 0 . 0 . 0 . 1 }.
 		{ 1 . 0 . 0 . 1 . 0 . 1 . 1 . 0 . 0 . 0 . 1 . 1 . 1 . 0 . 0 . 1 }.
-		{ 1 . 0 . 1 . 1 . 1 . 1 . 1 . 0 . 0 . 0 . 1 . 1 . 1 . 0 . 0 . 1 }.
+		{ 1 . 0 . 1 . 1 . 0 . 1 . 1 . 0 . 0 . 0 . 1 . 1 . 1 . 0 . 0 . 1 }.
 		{ 1 . 0 . 0 . 1 . 0 . 1 . 1 . 0 . 0 . 0 . 1 . 1 . 1 . 0 . 0 . 1 }." 8 "
 		{ 1 . 0 . 0 . 1 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 1 . 1 }.
 		{ 1 . 0 . 0 . 1 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 1 . 1 }.
 		{ 1 . 0 . 0 . 1 . 0 . 1 . 1 . 0 . 0 . 0 . 1 . 1 . 0 . 1 . 1 . 1 }.
 		{ 1 . 0 . 0 . 1 . 0 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 }.
-		{ 1 . 0 . 0 . 1 . 0 . 0 . 1 . 1 . 1 . 1 . 1 . 0 . 0 . 1 . 1 . 1 }.
+		{ 1 . 0 . 0 . 1 . 0 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 }.
 		{ 1 . 0 . 0 . 1 . 0 . 0 . 1 . 1 . 1 . 0 . 0 . 0 . 0 . 0 . 0 . 1 }.
 		{ 1 . 0 . 0 . 1 . 0 . 0 . 1 . 1 . 1 . 0 . 0 . 0 . 1 . 1 . 1 . 1 }.
 		{ 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 }.

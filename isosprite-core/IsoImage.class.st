@@ -32,7 +32,7 @@ IsoImage >> adjustment: anObject [
 IsoImage >> form: f [
 	form ifNotNil: [ self removeMorph: form ].
 	form := f.
-	Transcript show:'IsoImage form ',form asString,' has renderOffset ',renderOffset asString;cr.
+	"Transcript show:'IsoImage form ',form asString,' has renderOffset ',renderOffset asString;cr."
 	form position: self position -  renderOffset.
 	self resizecurrentImage .
 	self addMorph: form

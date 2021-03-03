@@ -20,9 +20,9 @@ TestCaveTileSprite class >> generate: spritename [
 		n := (spritename substrings: '_' ) last asNumber.
 		instance form: (instance getTileFrom: image x: n y: 0) ].
 	spritename = 'case_1' ifTrue: [ 
-		instance form: (instance getTileFrom: image x: 10 y: 3) ].
+		instance form: (instance getTileFrom: image x: 11 y: 3) ].
 	spritename = 'case_2' ifTrue: [ 
-		instance form: (instance getTileFrom: image x: 9 y: 3) ].
+		instance form: (instance getTileFrom: image x: 2 y: 4) ].
 	spritename = 'case_3' ifTrue: [ 
 		instance form: (instance getTileFrom: image x: 3 y: 3) ].
 	spritename = 'case_4' ifTrue: [ 
@@ -32,7 +32,7 @@ TestCaveTileSprite class >> generate: spritename [
 	spritename = 'case_6' ifTrue: [ 
 		instance form: (instance getTileFrom: image x: 2 y: 3) ].
 	spritename = 'case_7' ifTrue: [ 
-		instance form: (instance getTileFrom: image x: 1 y: 4) ].
+		instance form: (instance getTileFrom: image x: 10 y: 3) ].
 	spritename = 'case_8' ifTrue: [ 
 		instance form: (instance getTileFrom: image x: 0 y: 4) ].
 	spritename = 'case_9' ifTrue: [ 
