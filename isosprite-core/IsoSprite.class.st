@@ -52,7 +52,8 @@ Class {
 		'spriteCache',
 		'registeredSpriteFactories',
 		'imageCache',
-		'encodedSprites'
+		'encodedSprites',
+		'formCache'
 	],
 	#category : #'isosprite-core'
 }
@@ -107,6 +108,25 @@ IsoSprite class >> getDeltaForDirectionValue: v [
 		y := 1 ].
 	v = 8 ifTrue: [ y := 1 ].
 	^ x @ y
+]
+
+{ #category : #'class initialization' }
+IsoSprite class >> getFormFrom: tilename height: tileHeight width: tileWidth x: x y: y img: img [
+
+	| f lookup i startx starty endx endy |
+	lookup := img asString , '_' , x asString , '_' , y asString.
+	f := formCache at: lookup ifAbsent: [ 
+		  | form |
+		  startx := x * tileWidth.
+		  starty := y * tileHeight.
+		  endx := startx + tileWidth.
+		  endy := starty + tileHeight.
+
+		  i := img copy: (startx @ starty corner: endx @ endy).
+		  form := AlphaImageMorph new image: i.
+		  formCache at: lookup put: form.
+		  form ].
+	^ f copy
 ]
 
 { #category : #'class initialization' }
@@ -181,6 +201,7 @@ IsoSprite class >> getTargetForDirectionValue: v position: pos [
 IsoSprite class >> initialize [
 	spriteCache := Dictionary new.
 	imageCache := Dictionary new.
+	formCache := Dictionary new.
 	encodedSprites := Dictionary new.
 	registeredSpriteFactories := Dictionary new.
 ]
@@ -235,6 +256,8 @@ IsoSprite >> form: f [
 	| isoimage |
 	isoimage := IsoImage new.
 	isoimage
+		scaleFactor: scaleFactor ;
+		renderSize: renderSize ;
 		renderOffset: renderOffset;
 		form: f.
 	self addMorph: isoimage
@@ -243,14 +266,13 @@ IsoSprite >> form: f [
 { #category : #accessing }
 IsoSprite >> getTileFrom: img x: x y: y [
 
-	| i startx starty endx endy |
-	startx := x * tileWidth.
-	starty := y * tileHeight.
-	endx := startx + tileWidth.
-	endy := starty + tileHeight.
-
-	i := img copy: (startx @ starty corner: endx @ endy).
-	^ AlphaImageMorph new image: i
+	^ IsoSprite
+		  getFormFrom: name
+		  height: tileHeight
+		  width: tileWidth
+		  x: x
+		  y: y
+		  img: img
 ]
 
 { #category : #accessing }
@@ -289,6 +311,8 @@ IsoSprite >> loadSpriteImage: img spriteWidth: _width spriteHeight: _height spri
 		0 to: img height - _height by: _height do: [ :y | 
 			| i aMorph |
 			i := img copy: (x @ y corner: x + _width @ (y + _height)).
+			"TODO: Here is 45% of all CPU during initialization"
+			"Create a class cache for images for a given resize"
 			aMorph := AlphaImageMorph new image: i.
 			aMorph resize: renderSize.
 			sprites at: index put: aMorph.

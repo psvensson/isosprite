@@ -15,10 +15,36 @@ Class {
 		'minY',
 		'maxX',
 		'maxY',
-		'player'
+		'player',
+		'floorTiles',
+		'wallTiles'
 	],
 	#category : #'isosprite-core-Tests'
 }
+
+{ #category : #initialization }
+TestBoardController >> addCaveFloorTile: tileName at: boardPosition [
+
+	| tile |
+	self setMinMaxvalues: boardPosition .
+	"tile := TestOldTileObject create: tileName."
+	tile := TestCaveTileObject create: tileName.
+	tile boardPosition: boardPosition.
+	floorTiles at: boardPosition put: tile.
+	Transcript show: 'adding floor tile ',tile asString,' at ',boardPosition asString;cr.
+]
+
+{ #category : #initialization }
+TestBoardController >> addCaveWallTile: tileName at: boardPosition [
+
+	| tile |
+	self setMinMaxvalues: boardPosition .
+	"tile := TestOldTileObject create: tileName."
+	tile := TestCaveTileObject create: tileName.
+	tile boardPosition: boardPosition.
+	wallTiles at: boardPosition put: tile.
+	"Transcript show: 'adding tile at ',boardPosition asString;cr."
+]
 
 { #category : #initialization }
 TestBoardController >> addEntity: entityName at: boardPosition [
@@ -43,7 +69,7 @@ TestBoardController >> addFloorTile: tileName at: boardPosition [
 	tile := TestTileObject create: tileName.
 	tile boardPosition: boardPosition.
 	tiles at: boardPosition put: tile.
-	"Transcript show: 'adding tile at ',boardPosition asString;cr."
+	Transcript show: 'adding floor tile ',tile asString,' at ',boardPosition asString;cr.
 ]
 
 { #category : #initialization }
@@ -111,11 +137,13 @@ TestBoardController >> getSpritesFrom: start to: end [
 { #category : #initialization }
 TestBoardController >> getStackFor: point [
 
-	| stack tile entity |
+	| stack floorTile wallTile entity |
 	stack := OrderedCollection new.
-	tile := self lookupTileAt: point.
+	wallTile := self lookupWallTileAt: point.
+	floorTile := self lookupFloorTileAt: point.
 	entity := self lookupEntityAt: point.
-	tile ifNotNil: [ stack add: tile ].
+	floorTile ifNotNil: [ stack add: floorTile ].
+	wallTile ifNotNil: [ stack add: wallTile ].
 	entity ifNotNil: [ stack add: entity ].
 	^ stack
 ]
@@ -151,16 +179,22 @@ TestBoardController >> initializeEntities [
 ]
 
 { #category : #initialization }
-TestBoardController >> initializeTiles [ 
-	tiles := Dictionary new.
-	-4 to: 4 do: [ :y|
-		-4 to: 4 do: [ :x|
-			| tileno |
-			tileno := 12 atRandom .
-		   self addFloorTile: 'cr_floor',tileno asString at: x@y
-		"self addTile: 'grey_floor' at: x@y"] ].
-	self addTile: 'brown_wall' at: 1@0.
-	self addTile: 'brown_wall' at: (-1)@0.
+TestBoardController >> initializeTiles [
+
+	| tileData |
+	floorTiles := Dictionary new.
+	wallTiles := Dictionary new.
+	tileData := self sampleCaveData.
+	-7 to: 7 do: [ :xy | 
+		-7 to: 7 do: [ :xx | 
+			| tileno val x y |
+			x := 8 + xx.
+			y := 8 + xy.
+			val := self marchingSquaresValueFor: x @ y.
+			tileno := 16 atRandom.
+			self addCaveFloorTile: 'tile_' , tileno asString at: xx @ xy.
+			val > 0 ifTrue: [ 
+				self addCaveWallTile: 'case_' , val asString at: xx @ xy ] ] ]
 ]
 
 { #category : #accessing }
@@ -194,9 +228,34 @@ TestBoardController >> lookupEntityAt: boardPosition [
 ]
 
 { #category : #initialization }
-TestBoardController >> lookupTileAt: boardPosition [
-	^ tiles at: boardPosition ifAbsent: [ nil ]
+TestBoardController >> lookupFloorTileAt: boardPosition [
+	^ floorTiles at: boardPosition ifAbsent: [ nil ]
 	
+]
+
+{ #category : #initialization }
+TestBoardController >> lookupWallTileAt: boardPosition [
+	^ wallTiles at: boardPosition ifAbsent: [ nil ]
+	
+]
+
+{ #category : #accessing }
+TestBoardController >> marchingSquaresValueFor: point [
+	| val data row1 row2 a b c d |
+	data := self sampleCaveData .
+	row1 := data at: point y.
+	row2 := data at: point y + 1.
+	a := row1 at: point x.
+	b := row1 at: point x + 1.
+	c := row2 at: point x + 1.
+	d := row2 at: point x.
+	val := 0.
+	a = 1 ifTrue: [ val := val + 8 ].
+	b = 1 ifTrue: [ val := val + 4 ].
+	c = 1 ifTrue: [ val := val + 2 ].
+	d = 1 ifTrue: [ val := val + 1 ].
+	"Transcript show: point asString,' - ',a asString,' ',b asString,' ',c asString,' ',d asString,' -> ',val asString;cr."
+	^ val
 ]
 
 { #category : #accessing }
@@ -216,6 +275,28 @@ TestBoardController >> moveObject: obj dir: dirString [
 { #category : #accessing }
 TestBoardController >> player [ 
 	^ player
+]
+
+{ #category : #accessing }
+TestBoardController >> sampleCaveData [
+	^ {
+		{ 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 }.
+		{ 1 . 0 . 0 . 0 . 1 . 0 . 1 . 1 . 1 . 0 . 1 . 0 . 1 . 1 . 1 . 1 }.
+		{ 1 . 0 . 0 . 0 . 1 . 0 . 1 . 1 . 1 . 0 . 0 . 0 . 0 . 0 . 0 . 1 }.
+		{ 1 . 0 . 0 . 0 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 0 . 0 . 0 . 1 }.
+		{ 1 . 0 . 0 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 0 . 0 . 0 . 1 }.
+		{ 1 . 0 . 0 . 1 . 0 . 1 . 1 . 0 . 0 . 0 . 1 . 1 . 1 . 0 . 0 . 1 }.
+		{ 1 . 0 . 1 . 1 . 1 . 1 . 1 . 0 . 0 . 0 . 1 . 1 . 1 . 0 . 0 . 1 }.
+		{ 1 . 0 . 0 . 1 . 0 . 1 . 1 . 0 . 0 . 0 . 1 . 1 . 1 . 0 . 0 . 1 }." 8 "
+		{ 1 . 0 . 0 . 1 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 1 . 1 }.
+		{ 1 . 0 . 0 . 1 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 0 . 1 . 1 }.
+		{ 1 . 0 . 0 . 1 . 0 . 1 . 1 . 0 . 0 . 0 . 1 . 1 . 0 . 1 . 1 . 1 }.
+		{ 1 . 0 . 0 . 1 . 0 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 }.
+		{ 1 . 0 . 0 . 1 . 0 . 0 . 1 . 1 . 1 . 1 . 1 . 0 . 0 . 1 . 1 . 1 }.
+		{ 1 . 0 . 0 . 1 . 0 . 0 . 1 . 1 . 1 . 0 . 0 . 0 . 0 . 0 . 0 . 1 }.
+		{ 1 . 0 . 0 . 1 . 0 . 0 . 1 . 1 . 1 . 0 . 0 . 0 . 1 . 1 . 1 . 1 }.
+		{ 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 . 1 }.
+	}
 ]
 
 { #category : #initialization }

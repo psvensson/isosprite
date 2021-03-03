@@ -71,7 +71,7 @@ IsoSpriteBoard >> getScaledSpritePositionFrom: boardPosition [
 	midPoint := self extent x / 3 @ (self extent y / 2).
 	normalizedBoardPosition := boardPosition - cursor.
 	spriteBoardPosition := normalizedBoardPosition.
-	^ spriteBoardPosition * self class tileSize * globalScaleFactor.
+	^ spriteBoardPosition * self class tileSize .
 ]
 
 { #category : #initialization }
@@ -121,7 +121,7 @@ IsoSpriteBoard >> initialize [
 		color: Color transparent;
 		borderWidth: 2;
 		borderColor: Color green;
-		cursorRadius: 2.
+		cursorRadius: 3.
 	animations := OrderedCollection new.	
 ]
 
@@ -160,7 +160,7 @@ IsoSpriteBoard >> paint [
 IsoSpriteBoard >> paintTilestack: tileStack [ 
 	"Paint al sprites in stack from lowest to highest"
 	tileStack do: [ :object |
-		"Transcript show: 'IsoSpriteBoard::paintTileStack adding sprite ',object asString;cr."
+		"Transcript show: 'IsoSpriteBoard::paintTileStack adding sprite ',object sprite asString;cr."
 		self removeMorph: object sprite.
 		self positionIsometricObject: object .		
 		self addMorph: object sprite  ]

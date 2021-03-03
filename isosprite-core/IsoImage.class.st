@@ -32,10 +32,10 @@ IsoImage >> adjustment: anObject [
 IsoImage >> form: f [
 	form ifNotNil: [ self removeMorph: form ].
 	form := f.
-	"Transcript show:'IsoImage form has renderOffset ',renderOffset asString;cr."
+	Transcript show:'IsoImage form ',form asString,' has renderOffset ',renderOffset asString;cr.
 	form position: self position -  renderOffset.
-	form resize: scaleFactor * renderSize   .
-	self addMorph: f
+	self resizecurrentImage .
+	self addMorph: form
 ]
 
 { #category : #accessing }
@@ -73,7 +73,7 @@ IsoImage >> renderSize: r [
 { #category : #accessing }
 IsoImage >> resizeImageToScale: image [
 	| resize |
-	resize := globalScaleFactor * (image width @ image height).
+	resize := globalScaleFactor * scaleFactor * renderSize .
 	^ image copy resize: resize
 ]
 
@@ -82,7 +82,7 @@ IsoImage >> resizecurrentImage [
 
 	| resize |
 	form ifNotNil: [ 
-		resize := globalScaleFactor * (form width @ form height).
+		resize := globalScaleFactor * scaleFactor * renderSize.
 		form resize: resize ]
 ]
 
