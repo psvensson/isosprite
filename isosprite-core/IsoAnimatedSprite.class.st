@@ -44,6 +44,12 @@ IsoAnimatedSprite >> animations: anObject [
 	animations := anObject
 ]
 
+{ #category : #accessing }
+IsoAnimatedSprite >> direction: anObject [
+	super direction: anObject .
+	selectedAnimation direction: anObject 
+]
+
 { #category : #generating }
 IsoAnimatedSprite >> generateAnimationsFromDefinition [
 
@@ -161,11 +167,15 @@ IsoAnimatedSprite >> parsekeyValuesFrom: row [
 IsoAnimatedSprite >> play: animationName [
 
 	| animation |
+	Transcript
+		show: 'animatedSprite::play (no callback) ' , animationName , ' direction '
+			, direction asString;
+		cr.
 	animation := animations at: animationName.
 	self setSelectedAnimation: animation.
 	animation
 		scaleFactor: scaleFactor;
-		globalScaleFactor: globalScaleFactor ;
+		globalScaleFactor: globalScaleFactor;
 		renderOffset: renderOffset;
 		direction: direction;
 		position: self position;
@@ -176,6 +186,7 @@ IsoAnimatedSprite >> play: animationName [
 IsoAnimatedSprite >> play: animationName callback: aBlock [
 
 	| animation |
+	Transcript show:'animatedSprite::play w callback ',animationName ;cr.
 	animation := animations at: animationName.
 	self setSelectedAnimation: animation.
 	animation
@@ -206,7 +217,9 @@ IsoAnimatedSprite >> setSelectedAnimation: animation [
 
 	selectedAnimation ifNotNil: [ self removeMorph: selectedAnimation ].
 	selectedAnimation := animation.
-	animation globalScaleFactor: globalScaleFactor.
+	animation
+		position: self position;
+		globalScaleFactor: globalScaleFactor.
 	self addMorph: selectedAnimation.
 	stepTime := animation animationStepTime
 ]

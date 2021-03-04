@@ -20,7 +20,7 @@ TestCaveTileSprite class >> generate: spritename [
 		n := (spritename substrings: '_' ) last asNumber.
 		instance form: (instance getTileFrom: image x: n y: 0) ].
 	spritename = 'case_1' ifTrue: [ 
-		instance form: (instance getTileFrom: image x: 11 y: 3) ].
+		instance form: (instance getTileFrom: image x: 3 y: 3) ].
 	spritename = 'case_2' ifTrue: [ 
 		instance form: (instance getTileFrom: image x: 2 y: 4) ].
 	spritename = 'case_3' ifTrue: [ 

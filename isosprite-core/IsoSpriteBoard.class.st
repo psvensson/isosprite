@@ -45,7 +45,7 @@ IsoSpriteBoard >> cursorRadius: aNumber [
 
 	| side |
 	cursorRadius := aNumber.
-	side := 1 + (4 * cursorRadius) * self class tileSize.
+	side := 3 + (4 * cursorRadius) * self class tileSize.
 	self extent: ("self class toISO: "side @ side)
 ]
 
@@ -118,7 +118,7 @@ IsoSpriteBoard >> initialize [
 	cursor := 0 @ 0.	
 	globalScaleFactor := 2 @ 2.
 	self
-		color: Color transparent;
+		color: Color black;
 		borderWidth: 2;
 		borderColor: Color green;
 		cursorRadius: 3.
@@ -181,7 +181,7 @@ IsoSpriteBoard >> positionSprite: sprite from: boardPosition withDiff: diff [
 	"Transcript show:'positionSprite ',sprite asString ,' diff = ',diff asString;cr."
 	spritePosition := self getScaledSpritePositionFrom: boardPosition.
 	isoSpritePosition := self class toISO: spritePosition - diff.
-	totalSpritePosition := isoSpritePosition + self position.
+	totalSpritePosition := isoSpritePosition + self center.
 
 	sprite
 		globalScaleFactor: globalScaleFactor;

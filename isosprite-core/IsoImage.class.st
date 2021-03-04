@@ -83,7 +83,9 @@ IsoImage >> resizecurrentImage [
 	| resize |
 	form ifNotNil: [ 
 		resize := globalScaleFactor * scaleFactor * renderSize.
-		form resize: resize ]
+		form := form
+			        resize: resize;
+			        copy ]
 ]
 
 { #category : #accessing }

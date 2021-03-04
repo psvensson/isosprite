@@ -132,7 +132,7 @@ IsoAnimatedImage >> name: n [
 { #category : #accessing }
 IsoAnimatedImage >> play [
 
-	"Transcript show:'IsoAnimatedImage::play ',name,' scaleFactor ',scaleFactor asString;cr."
+	Transcript show:'IsoAnimatedImage::play (no callback)) ',name,' scaleFactor ',scaleFactor asString;cr.
 
 	self startStepping
 ]
@@ -188,10 +188,12 @@ IsoAnimatedImage >> position: p [
 IsoAnimatedImage >> setCurrentFrame: image [
 
 	| resizedImage |
-	currentFrame ifNotNil: [ self removeMorph: currentFrame ].
+	"currentFrame ifNotNil: [ self removeMorph: currentFrame ]."
+	self removeAllMorphs .
 	resizedImage := self resizeImageToScale: image.
 	resizedImage position: self position - renderOffset .
 	currentFrame := resizedImage .
+	"currentFrame position: self position."
 	self addMorph: currentFrame
 ]
 

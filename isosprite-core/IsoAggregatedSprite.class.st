@@ -110,11 +110,11 @@ IsoAggregatedSprite >> play: animationName [
 	currentAnimationname := animationName .
 	self removeAllMorphs.
 	selectedAtLayer valuesDo: [ :sprite | 
-		self addMorph: sprite.		
+		self addMorph: sprite.
 		"Transcript
 		show: '--------------- IsoAggregatedSprite::play ' , animationName,' for sprite ',sprite name,' renderOffset: ',renderOffset asString;cr."
 		sprite
-			"position: self position;"
+			position: self position;
 			direction: direction;
 			renderOffset: renderOffset ;
 			scaleFactor: scaleFactor ;
@@ -153,26 +153,27 @@ IsoAggregatedSprite >> renderOffset: r [
 ]
 
 { #category : #adding }
-IsoAggregatedSprite >> selectSpriteForLayer: layerName [
-
-	^ selectedAtLayer at: layerName ifAbsent: [ ^nil ]
+IsoAggregatedSprite >> selectedAnimation [ 
+	^ selectedAtLayer values first selectedAnimation 
 ]
 
 { #category : #adding }
-IsoAggregatedSprite >> selectedAnimation [ 
-	^ selectedAtLayer values first selectedAnimation 
+IsoAggregatedSprite >> selectedSpriteForLayer: layerName [
+
+	^ selectedAtLayer at: layerName ifAbsent: [ ^nil ]
 ]
 
 { #category : #adding }
 IsoAggregatedSprite >> setSelectSpriteNamed: spriteName forLayer: layerName [
 
 	| sprite oldSprite |
-	oldSprite := self selectSpriteForLayer: layerName.
+	oldSprite := self selectedSpriteForLayer: layerName.
 	oldSprite ifNotNil: [ self removeMorph: oldSprite ].
 	sprite := (layers at: layerName) at: spriteName.
 	selectedAtLayer at: layerName put: sprite.
 	self setSelectedAnimation: sprite animations values first.
 	anySprite := sprite.
+	Transcript show:'setSelectSpritenamed ',spriteName ,' for layer ',layerName, ' direction ',direction asString ;cr.
 	sprite
 		position: self position;
 		direction: direction;

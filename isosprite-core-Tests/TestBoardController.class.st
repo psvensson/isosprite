@@ -91,6 +91,12 @@ TestBoardController >> attack [
 ]
 
 { #category : #accessing }
+TestBoardController >> backShowing: case [
+
+	^ ({ 1. 2. 3. 5. 6. 7. 10. 11. 14. 15 } includes: case) not
+]
+
+{ #category : #accessing }
 TestBoardController >> board [
 
 	^ board
@@ -106,7 +112,7 @@ TestBoardController >> board: anObject [
 TestBoardController >> equipItem [
 
 	| current |
-	current := player sprite selectSpriteForLayer: 'body'.
+	current := player sprite selectedSpriteForLayer: 'body'.
 	Transcript show:'testBoardControleer.equipItem current = ',current name;cr.
 	current name = 'clothes' ifTrue: [ 
 		player sprite
@@ -192,8 +198,9 @@ TestBoardController >> initializeTiles [
 			y := 8 + xy.
 			val := self marchingSquaresValueFor: x @ y.
 			tileno := 16 atRandom.
-			self addCaveFloorTile: 'tile_' , tileno asString at: xx @ xy.
-			(val > 0 and: [val < 15]) ifTrue: [ 
+			(self backShowing: val) ifTrue: [ 
+				self addCaveFloorTile: 'tile_' , (tileno - 1) asString at: xx @ xy ].
+			(val > 0 and: [ val < 15 ]) ifTrue: [ 
 				self addCaveWallTile: 'case_' , val asString at: xx @ xy ] ] ]
 ]
 
@@ -311,7 +318,7 @@ TestBoardController >> setMinMaxvalues: boardPosition [
 TestBoardController >> wieldItem [
 
 	| current |
-	current := player sprite selectSpriteForLayer: 'weapon'.
+	current := player sprite selectedSpriteForLayer: 'weapon'.
 	current name = 'dagger' ifTrue: [ 
 		player sprite setSelectSpriteNamed: 'short_sword' forLayer: 'weapon' ].
 	current name = 'short_sword' ifTrue: [ 
