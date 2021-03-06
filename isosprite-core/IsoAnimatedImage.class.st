@@ -145,7 +145,7 @@ IsoAnimatedImage >> play [
 { #category : #accessing }
 IsoAnimatedImage >> play: aBlock [
 	callback := aBlock.
-	"Transcript show:'IsoAnimatedImage::play ',name,' scaleFactor ',scaleFactor asString;cr."
+	Transcript show:'IsoAnimatedImage::play ',name,' scaleFactor ',type;cr.
 
 	self startStepping
 ]
@@ -164,7 +164,7 @@ IsoAnimatedImage >> playLooped [
 IsoAnimatedImage >> playOnce [
 
 	frame := frame + 1.
-	Transcript show:'playOnce drawing animation ',name,' once -> frame ',frame asString;cr.
+	Transcript show:'----- playOnce drawing animation ',name,' once -> frame ',frame asString;cr.
 	frame > frames size ifFalse: [ ^ self ].
 	frame := 1.
 	self stopStepping.
@@ -191,13 +191,15 @@ IsoAnimatedImage >> position: p [
 
 { #category : #accessing }
 IsoAnimatedImage >> setCurrentFrame: image [
-
 	| resizedImage |
-	"currentFrame ifNotNil: [ self removeMorph: currentFrame ]."
-	self removeAllMorphs .
+	currentFrame ifNotNil: [ self removeMorph: currentFrame ].
+	"self removeAllMorphs."
 	resizedImage := self resizeImageToScale: image.
-	resizedImage position: self position - renderOffset .
-	currentFrame := resizedImage .
+	resizedImage position: self position - renderOffset.
+	currentFrame := resizedImage.
+	"Transcript
+		show: 'IsoAnimatedSprite::setCurrentFrame ' , currentFrame asString;
+		cr."
 	"currentFrame position: self position."
 	self addMorph: currentFrame
 ]
@@ -228,14 +230,16 @@ IsoAnimatedImage >> spritesPerRow: anObject [
 
 { #category : #'stepping and presenter' }
 IsoAnimatedImage >> step [
-
 	| aFrame directionFrames |
 	directionFrames := frames at: frame.
 	aFrame := directionFrames at: direction.
 	self setCurrentFrame: aFrame.
-	(type isNil or: [ type = 'play_once' ]) ifTrue: [ self playOnce ].
-	type = 'looped' ifTrue: [ self playLooped ].
-	type = 'back_forth' ifTrue: [ self playbackAndForth ]
+	type = 'play_once'
+		ifTrue: [ self playOnce ].
+	type = 'looped'
+		ifTrue: [ self playLooped ].
+	type = 'back_forth'
+		ifTrue: [ self playbackAndForth ]
 ]
 
 { #category : #accessing }

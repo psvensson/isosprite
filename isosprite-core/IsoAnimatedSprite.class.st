@@ -167,7 +167,6 @@ IsoAnimatedSprite >> parsekeyValuesFrom: row [
 IsoAnimatedSprite >> play: animationName [
 
 	| animation |
-	"self removeAllMorphs ."
 	"Transcript
 		show:
 			'animatedSprite::play (no callback) ' , animationName
@@ -206,11 +205,11 @@ IsoAnimatedSprite >> selectedAnimation [
 
 { #category : #accessing }
 IsoAnimatedSprite >> setAnimationProps: animation [
-	"Transcript
+	Transcript
 		show:
 			'animatedSprite::setAnimationProps ' , animation name
 			, ' position ' , self position asString;
-		cr."
+		cr.
 	animation
 		scaleFactor: scaleFactor;
 		globalScaleFactor: globalScaleFactor ;
@@ -221,11 +220,11 @@ IsoAnimatedSprite >> setAnimationProps: animation [
 
 { #category : #accessing }
 IsoAnimatedSprite >> setSelectedAnimation: animation [
-	"Transcript
+	Transcript
 		show:
-			'animatedSprite::setSelectedAnimation ' , animation nameg
+			'animatedSprite::setSelectedAnimation ' , animation name
 			, ' direction ' , direction asString;
-		cr."
+		cr.
 	selectedAnimation ifNotNil: [ self removeMorph: selectedAnimation ].
 	selectedAnimation := animation.
 	self setAnimationProps: animation.	

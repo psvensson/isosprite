@@ -111,8 +111,9 @@ IsoAggregatedSprite >> play: animationName [
 	selectedAtLayer
 		valuesDo: [ :sprite | 
 			self setSpriteProps: sprite.
+			self addMorph: sprite.
 			sprite play: animationName.
-			self addMorph: sprite ]
+			 ]
 ]
 
 { #category : #adding }
@@ -124,6 +125,7 @@ IsoAggregatedSprite >> play: animationName callback: aBlock [
 	selectedAtLayer
 		valuesDo: [ :sprite | 
 			self setSpriteProps: sprite.
+			self addMorph: sprite.
 			sprite
 				play: animationName
 				callback: [ "position: self position;"
@@ -169,7 +171,7 @@ IsoAggregatedSprite >> setSelectSpriteNamed: spriteName forLayer: layerName [
 		scaleFactor: scaleFactor;
 		globalScaleFactor: globalScaleFactor.
 	currentAnimationname ifNotNil: [ self play: currentAnimationname ].
-	"self addMorph: sprite"
+	self addMorph: sprite
 ]
 
 { #category : #adding }
