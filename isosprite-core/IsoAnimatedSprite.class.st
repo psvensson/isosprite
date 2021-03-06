@@ -167,35 +167,27 @@ IsoAnimatedSprite >> parsekeyValuesFrom: row [
 IsoAnimatedSprite >> play: animationName [
 
 	| animation |
+	"self removeAllMorphs ."
 	Transcript
-		show: 'animatedSprite::play (no callback) ' , animationName , ' direction '
-			, direction asString;
+		show:
+			'animatedSprite::play (no callback) ' , animationName
+			, ' direction ' , direction asString;
 		cr.
 	animation := animations at: animationName.
 	self setSelectedAnimation: animation.
-	animation
-		scaleFactor: scaleFactor;
-		globalScaleFactor: globalScaleFactor;
-		renderOffset: renderOffset;
-		direction: direction;
-		position: self position;
-		play
+	animation play
 ]
 
 { #category : #accessing }
 IsoAnimatedSprite >> play: animationName callback: aBlock [
 
 	| animation |
-	Transcript show:'animatedSprite::play w callback ',animationName ;cr.
+	Transcript
+		show: 'animatedSprite::play w callback ' , animationName;
+		cr.
 	animation := animations at: animationName.
 	self setSelectedAnimation: animation.
-	animation
-		scaleFactor: scaleFactor;
-		globalScaleFactor: globalScaleFactor ;
-		renderOffset: renderOffset;
-		direction: direction;
-		position: self position;
-		play: aBlock 
+	animation play: aBlock
 ]
 
 { #category : #accessing }
@@ -213,15 +205,33 @@ IsoAnimatedSprite >> selectedAnimation [
 ]
 
 { #category : #accessing }
-IsoAnimatedSprite >> setSelectedAnimation: animation [
+IsoAnimatedSprite >> setAnimationProps: animation [
+	Transcript
+		show:
+			'animatedSprite::setAnimationProps ' , animation name
+			, ' position ' , self position asString;
+		cr.
+	animation
+		scaleFactor: scaleFactor;
+		globalScaleFactor: globalScaleFactor ;
+		renderOffset: renderOffset;
+		direction: direction;
+		position: self position.
+]
 
+{ #category : #accessing }
+IsoAnimatedSprite >> setSelectedAnimation: animation [
+	"Transcript
+		show:
+			'animatedSprite::setSelectedAnimation ' , animation nameg
+			, ' direction ' , direction asString;
+		cr."
 	selectedAnimation ifNotNil: [ self removeMorph: selectedAnimation ].
 	selectedAnimation := animation.
-	animation
-		position: self position;
-		globalScaleFactor: globalScaleFactor.
+	self setAnimationProps: animation.	
+	stepTime := animation animationStepTime.
 	self addMorph: selectedAnimation.
-	stepTime := animation animationStepTime
+	
 ]
 
 { #category : #accessing }

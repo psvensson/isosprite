@@ -125,6 +125,11 @@ IsoAnimatedImage >> initialize [
 ]
 
 { #category : #accessing }
+IsoAnimatedImage >> name [
+	^ name
+]
+
+{ #category : #accessing }
 IsoAnimatedImage >> name: n [
 	name := n
 ]
@@ -159,7 +164,7 @@ IsoAnimatedImage >> playLooped [
 IsoAnimatedImage >> playOnce [
 
 	frame := frame + 1.
-	"Transcript show:'playOnce drawing frame ',frame asString;cr."
+	Transcript show:'playOnce drawing animation ',name,' once -> frame ',frame asString;cr.
 	frame > frames size ifFalse: [ ^ self ].
 	frame := 1.
 	self stopStepping.
