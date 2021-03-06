@@ -27,7 +27,8 @@ Metacello new
 sprite := TestAnimatedSprite generate: 'default'.
 sprite openInHand.
 "place sprite somwhere on screen"
-sprite play: 'critdie'. "or 'stance', 'cast', 'block', 'hit', 'spawn', et.c. Animation names can be found in the tesAnimatedSprite class method #definition "
+sprite play: 'critdie'. "or 'stance', 'cast', 'block', 'hit', 'spawn', et.c. "
+"Animation names can be found in the TestAnimatedSprite class method #definition "
 sprite owner removeMorph: sprite "to remove from screen"
 ```
 
