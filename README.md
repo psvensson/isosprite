@@ -25,3 +25,8 @@ sprite owner removeMorph: sprite    "to remove from screen"
 ```
 
 The TestBoardController class is a sample of how one could use the IsoSpriteBoard to add different sprites as tiles and as players or enemies.
+
+It also implement some basic keyboard input, for the hero;
+* e - equip different hero armours
+* w - wield different hero weapons
+* q - attack with weapon
