@@ -2,7 +2,7 @@
 A Smalltalk project for managing and displaying isometric sprites
 
 Written in Pharo but uses Morphic and should hopefully work in other smalltalk, let me know if not.
-Graphics and sprites ise mostly (c) but CC by Clint Bellanger and from OpenGameart; https://opengameart.org/content/cave-tileset
+Graphics and sprites is mostly (c) but CC by Clint Bellanger and from OpenGameart; https://opengameart.org/content/cave-tileset
 
 Currently supports:
 * Parsing and picking out individual sprites from a spritesheet png
@@ -13,3 +13,22 @@ Currently supports:
 
 Run the IsoSpriteBoardTest which acts as just an example and opens an IsoSpriteBoard in world.
 ![image](https://github.com/psvensson/isosprite/blob/main/Screenshot%20from%202021-03-05%2015-22-58.png)
+
+## Loading from playground
+```
+Metacello new
+    repository: 'github://psvensson/isosprite';
+    baseline: 'Golgotterath';
+    load
+```
+
+## Running 
+```
+sprite := TestAnimatedSprite generate: 'default'.
+sprite openInHand.
+"place sprite somwhere on screen"
+sprite play: 'critdie'. "or 'stance', 'cast', 'block', 'hit', 'spawn', et.c. Animation names can be found in the tesAnimatedSprite class method #definition "
+sprite owner removeMorph: sprite "to remove from screen"
+```
+
+The TestBoardController class is a sample of how one could use the IsoSpriteBoard to add different sprites as tiles and as players or enemies.
