@@ -14,13 +14,6 @@ Currently supports:
 Run the IsoSpriteBoardTest which acts as just an example and opens an IsoSpriteBoard in world.
 ![image](https://github.com/psvensson/isosprite/blob/main/Screenshot%20from%202021-03-05%2015-22-58.png)
 
-## Loading from playground
-```
-Metacello new
-    repository: 'github://psvensson/isosprite';
-    baseline: 'Golgotterath';
-    load
-```
 
 ## Running 
 ```
