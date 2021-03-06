@@ -168,11 +168,11 @@ IsoAnimatedSprite >> play: animationName [
 
 	| animation |
 	"self removeAllMorphs ."
-	Transcript
+	"Transcript
 		show:
 			'animatedSprite::play (no callback) ' , animationName
 			, ' direction ' , direction asString;
-		cr.
+		cr."
 	animation := animations at: animationName.
 	self setSelectedAnimation: animation.
 	animation play
@@ -206,11 +206,11 @@ IsoAnimatedSprite >> selectedAnimation [
 
 { #category : #accessing }
 IsoAnimatedSprite >> setAnimationProps: animation [
-	Transcript
+	"Transcript
 		show:
 			'animatedSprite::setAnimationProps ' , animation name
 			, ' position ' , self position asString;
-		cr.
+		cr."
 	animation
 		scaleFactor: scaleFactor;
 		globalScaleFactor: globalScaleFactor ;

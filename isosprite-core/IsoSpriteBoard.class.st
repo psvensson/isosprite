@@ -137,15 +137,16 @@ IsoSpriteBoard >> keyboardHandler: aBlock [
 
 { #category : #initialization }
 IsoSpriteBoard >> move: gameObject Direction: direction [
-
 	| anim |
-	
 	anim := IsoSpriteBoardAnimation new.
-	anim gameObject: gameObject  direction: direction.
+	anim
+		gameObject: gameObject
+		direction: direction
+		callback: [ cursor := gameObject boardPosition.
+			self paint ].
 	animations add: anim.
-	self isStepping ifFalse: [ self startStepping  ]
-	
-	
+	self isStepping
+		ifFalse: [ self startStepping ]
 ]
 
 { #category : #initialization }

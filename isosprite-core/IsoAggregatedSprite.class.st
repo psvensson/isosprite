@@ -106,41 +106,30 @@ IsoAggregatedSprite >> initialize [
 
 { #category : #adding }
 IsoAggregatedSprite >> play: animationName [
-
 	currentAnimationname := animationName.
 	self removeAllMorphs.
-	selectedAtLayer valuesDo: [ :sprite | "Transcript
-		show: '--------------- IsoAggregatedSprite::play ' , animationName,' for sprite ',sprite name,' renderOffset: ',renderOffset asString;cr."
-		sprite
-			position: self position;
-			direction: direction;
-			renderOffset: renderOffset;
-			scaleFactor: scaleFactor;
-			globalScaleFactor: globalScaleFactor;
-			play: animationName.
-		self addMorph: sprite ]
+	selectedAtLayer
+		valuesDo: [ :sprite | 
+			self setSpriteProps: sprite.
+			sprite play: animationName.
+			self addMorph: sprite ]
 ]
 
 { #category : #adding }
 IsoAggregatedSprite >> play: animationName callback: aBlock [
-
 	| calls |
 	currentAnimationname := animationName.
 	self removeAllMorphs.
 	calls := selectedAtLayer values size.
-	selectedAtLayer valuesDo: [ :sprite | 
-		"self addMorph: sprite."
-		"Transcript
-		show: '--------------- IsoAggregatedSprite::play ' , animationName,' for sprite ',sprite name,' renderOffset: ',renderOffset asString;cr."
-		sprite
-			direction: direction;
-			renderOffset: renderOffset;
-			scaleFactor: scaleFactor;
-			globalScaleFactor: globalScaleFactor;
-			play: animationName callback: [ 
-				calls := calls - 1.
-				calls = 0 ifTrue: [ aBlock value ] ]
-		"position: self position;" ]
+	selectedAtLayer
+		valuesDo: [ :sprite | 
+			self setSpriteProps: sprite.
+			sprite
+				play: animationName
+				callback: [ "position: self position;"
+					calls := calls - 1.
+					calls = 0
+						ifTrue: [ aBlock value ] ] ]
 ]
 
 { #category : #adding }
@@ -181,4 +170,14 @@ IsoAggregatedSprite >> setSelectSpriteNamed: spriteName forLayer: layerName [
 		globalScaleFactor: globalScaleFactor.
 	currentAnimationname ifNotNil: [ self play: currentAnimationname ].
 	"self addMorph: sprite"
+]
+
+{ #category : #adding }
+IsoAggregatedSprite >> setSpriteProps: sprite [ 
+	sprite
+			position: self position;
+			direction: direction;
+			renderOffset: renderOffset;
+			scaleFactor: scaleFactor;
+			globalScaleFactor: globalScaleFactor.
 ]

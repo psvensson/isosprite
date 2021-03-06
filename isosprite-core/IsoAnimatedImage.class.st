@@ -137,7 +137,7 @@ IsoAnimatedImage >> name: n [
 { #category : #accessing }
 IsoAnimatedImage >> play [
 
-	Transcript show:'IsoAnimatedImage::play (no callback)) ',name,' scaleFactor ',scaleFactor asString;cr.
+	"Transcript show:'IsoAnimatedImage::play (no callback)) ',name,' scaleFactor ',scaleFactor asString;cr."
 
 	self startStepping
 ]
