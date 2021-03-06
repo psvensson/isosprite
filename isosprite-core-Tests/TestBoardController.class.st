@@ -57,7 +57,8 @@ TestBoardController >> addEntity: entityName at: boardPosition [
 	entityName = 'zombie' ifTrue: [ entity := TestZombie create ].
 	entity sprite play: entity spriteIdleAnimationName .
 	entity boardPosition: boardPosition.
-	entities at: boardPosition put: entity
+	entities at: boardPosition put: entity.
+	^ entity
 ]
 
 { #category : #initialization }
@@ -167,9 +168,9 @@ TestBoardController >> initialize [
 	board
 		dataStore: [ :start :end | self getSpritesFrom: start to: end ];
 		dataQuery: [ :boardPosition | self getStackFor: boardPosition ];
-		keyboardHandler: [:evt | self keyStroke: evt].
-	board paint.
-	player := ((self getStackFor: 0@0) last).
+		keyboardHandler: [:evt | self keyStroke: evt];
+		followEntity: player.
+	board paint.	
 	
 ]
 
@@ -178,7 +179,7 @@ TestBoardController >> initializeEntities [
 	entities := Dictionary new.
 	self addEntity: 'hero' at: 0@(-2).
 	self addEntity: 'zombie' at: 0@(-1).
-	self addEntity: 'hero' at: 0@0.
+	player := self addEntity: 'hero' at: 0@0.
 	self addEntity: 'zombie' at: 0@1.
 	self addEntity: 'hero' at: 0@2.
 	self addEntity: 'zombie' at: 0@3.

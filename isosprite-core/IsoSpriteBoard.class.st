@@ -18,7 +18,8 @@ Class {
 		'dataQuery',
 		'keyboardHandler',
 		'globalScaleFactor',
-		'animations'
+		'animations',
+		'followEntity'
 	],
 	#category : #'isosprite-core'
 }
@@ -58,6 +59,11 @@ IsoSpriteBoard >> dataQuery: aBlock [
 { #category : #initialization }
 IsoSpriteBoard >> dataStore: aBlock [ 
 	dataStore := aBlock
+]
+
+{ #category : #initialization }
+IsoSpriteBoard >> followEntity: entity [
+	followEntity := entity
 ]
 
 { #category : #initialization }
@@ -142,8 +148,9 @@ IsoSpriteBoard >> move: gameObject Direction: direction [
 	anim
 		gameObject: gameObject
 		direction: direction
-		callback: [ cursor := gameObject boardPosition.
-			self paint ].
+		callback: [ gameObject = followEntity
+				ifTrue: [ cursor := gameObject boardPosition.
+					self paint ] ].
 	animations add: anim.
 	self isStepping
 		ifFalse: [ self startStepping ]
