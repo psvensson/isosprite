@@ -46,7 +46,8 @@ Class {
 		'tileWidth',
 		'tileHeight',
 		'globalScaleFactor',
-		'diff'
+		'diff',
+		'isoimage'
 	],
 	#classInstVars : [
 		'spriteCache',
@@ -253,7 +254,6 @@ IsoSprite >> form [
 { #category : #accessing }
 IsoSprite >> form: f [
 
-	| isoimage |
 	isoimage := IsoImage new.
 	isoimage
 		scaleFactor: scaleFactor ;
@@ -298,6 +298,12 @@ IsoSprite >> initialize [
 { #category : #accessing }
 IsoSprite >> isAnimated [ 
 ^ false
+]
+
+{ #category : #accessing }
+IsoSprite >> isoimage [
+
+	^ isoimage
 ]
 
 { #category : #accessing }

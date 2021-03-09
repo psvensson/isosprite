@@ -52,6 +52,7 @@ IsoImage >> initialize [
 	renderOffset := 0@0.
 	scaleFactor := 2.
 	globalScaleFactor := 1@1.
+	transparency := 1.0
 ]
 
 { #category : #accessing }
@@ -74,7 +75,7 @@ IsoImage >> renderSize: r [
 IsoImage >> resizeImageToScale: image [
 	| resize |
 	resize := globalScaleFactor * scaleFactor * renderSize .
-	^ image copy resize: resize
+	^ image copy resize: resize; alpha: transparency 
 ]
 
 { #category : #accessing }
@@ -99,7 +100,7 @@ IsoImage >> transparency [
 ]
 
 { #category : #accessing }
-IsoImage >> transparency: anObject [
-
-	transparency := anObject
+IsoImage >> transparency: a [
+	transparency := a.
+	form alpha: a
 ]

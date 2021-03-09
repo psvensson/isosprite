@@ -179,6 +179,7 @@ IsoSpriteBoard >> positionIsometricObject: object [
 
 	| boardPosition |
 	boardPosition := object boardPosition.
+	self transparentIfInFrontOfEntity: object.
 	self positionSprite: object sprite from: boardPosition withDiff: object sprite diff
 ]
 
@@ -187,7 +188,7 @@ IsoSpriteBoard >> positionSprite: sprite from: boardPosition withDiff: diff [
 
 	| spritePosition totalSpritePosition |
 	"Transcript show:'positionSprite ',sprite asString ,' diff = ',diff asString;cr."
-	spritePosition := self getScaledSpritePositionFrom: boardPosition.
+	spritePosition := self getScaledSpritePositionFrom: boardPosition.	
 	isoSpritePosition := self class toISO: spritePosition - diff.
 	totalSpritePosition := isoSpritePosition + self center.
 
@@ -208,4 +209,22 @@ IsoSpriteBoard >> step [
 { #category : #stepping }
 IsoSpriteBoard >> stepTime [
 	^ 67
+]
+
+{ #category : #initialization }
+IsoSpriteBoard >> transparentIfInFrontOfEntity: object [
+	| stack1 stack2 entities image |
+	image := object sprite isoimage.
+	image ifNotNil: [image transparency: 1.0 ].
+	object isEntity ifTrue: [ ^self ].
+	stack1 := dataQuery value: object boardPosition + (-1@(-1)).
+	stack2 := dataQuery value: object boardPosition + (-1@(-0)).
+	entities := stack1,stack2 select: [ :obj | obj isEntity ].
+	entities isEmpty ifFalse: [ 
+		| entity |
+		entity := entities first.
+		Transcript show:'-- sprite ',object asString,' is in front of entity ',entity  asString;cr.
+		image transparency: 0.5 ]
+	
+	
 ]

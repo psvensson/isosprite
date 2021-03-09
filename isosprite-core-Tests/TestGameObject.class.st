@@ -29,6 +29,11 @@ TestGameObject >> initialize [
 ]
 
 { #category : #initialization }
+TestGameObject >> isEntity [
+	self subclassResponsibility 
+]
+
+{ #category : #initialization }
 TestGameObject >> lastBoardPosition [
 	^ lastBoardPosition
 ]

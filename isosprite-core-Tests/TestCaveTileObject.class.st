@@ -13,6 +13,11 @@ TestCaveTileObject class >> create: tileName [
 ]
 
 { #category : #initialization }
+TestCaveTileObject >> isEntity [
+	^ false
+]
+
+{ #category : #initialization }
 TestCaveTileObject >> spriteIdleAnimationName [
 	^ nil
 ]

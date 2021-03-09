@@ -8,6 +8,11 @@ Class {
 }
 
 { #category : #initialization }
+TestEntityObject >> isEntity [
+	^ true
+]
+
+{ #category : #initialization }
 TestEntityObject >> spriteIdleAnimationName [
 	^ 'stance'
 ]
